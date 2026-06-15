@@ -2,29 +2,53 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة الإدارة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: Arial; background: #f4f7f6; margin: 0; display: flex; }
-        .sidebar { width: 250px; background: #2c3e50; color: white; height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 15px; margin-bottom: 10px; background: #34495e; border-radius: 5px; cursor: pointer; }
-        .sidebar a.active { background: #e74c3c; }
-        .content { flex: 1; padding: 30px; }
-        .cards { display: flex; gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex: 1; text-align: center; }
-        .card h3 { margin: 0; color: #7f8c8d; } .card h1 { margin: 10px 0 0 0; color: #2c3e50; font-size: 40px; }
-        .section { display: none; } .section.active { display: block; }
-        table { width: 100%; background: white; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #ddd; }
-        th { background: #2c3e50; color: white; }
-        .btn { padding: 10px 15px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-danger { background: #e74c3c; }
-        input { padding: 10px; margin-right: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        body { font-family: 'Cairo', sans-serif; background: #f4f7f6; margin: 0; display: flex; color: #333; }
+        
+        /* القائمة الجانبية */
+        .sidebar { width: 260px; background: #1e1e2f; color: white; height: 100vh; padding: 20px; box-sizing: border-box; position: fixed; right: 0; top: 0; box-shadow: -2px 0 10px rgba(0,0,0,0.1 ); }
+        .sidebar h2 { text-align: center; color: #ff9800; margin-bottom: 30px; font-weight: 700; border-bottom: 1px solid #3f3f5a; padding-bottom: 15px; }
+        .sidebar a { display: block; color: #ccc; text-decoration: none; padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .sidebar a:hover { background: #2a2a40; color: white; transform: translateX(-5px); }
+        .sidebar a.active { background: #ff5722; color: white; box-shadow: 0 4px 8px rgba(255,87,34,0.3); }
+        
+        /* المحتوى الرئيسي */
+        .content { margin-right: 260px; padding: 40px; flex: 1; width: calc(100% - 260px); box-sizing: border-box; }
+        .section { display: none; animation: fadeIn 0.4s; } 
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* البطاقات (الملخص) */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #ff5722; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0; color: #7f8c8d; font-size: 18px; } 
+        .card h1 { margin: 15px 0 0 0; color: #2c3e50; font-size: 45px; font-weight: 700; }
+        
+        /* الجداول والنماذج */
+        .control-panel { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        input { padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; font-size: 15px; flex: 1; min-width: 200px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #ff5722; box-shadow: 0 0 5px rgba(255,87,34,0.2); }
+        
+        .btn { padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 15px; transition: 0.3s; white-space: nowrap; }
+        .btn:hover { background: #43a047; transform: translateY(-2px); }
+        .btn-danger { background: #e74c3c; padding: 8px 15px; font-size: 14px; }
+        .btn-danger:hover { background: #c0392b; }
+        
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        th, td { padding: 18px 15px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #1e1e2f; color: white; font-weight: 600; }
+        tr:hover { background: #f9f9f9; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>⚙️ الإدارة</h2>
-        <a class="active" onclick="showSection('summary', this)">📊 الملخص</a>
+        <h2>⚙️ الإدارة الذكية</h2>
+        <a class="active" onclick="showSection('summary', this)">📊 الملخص العام</a>
         <a onclick="showSection('branches', this)">🏪 إدارة الفروع</a>
         <a onclick="showSection('menu', this)">🍔 إدارة المنيو</a>
     </div>
@@ -32,53 +56,66 @@
     <div class="content">
         <!-- قسم الملخص -->
         <div id="summary" class="section active">
-            <h2>الملخص العام</h2>
+            <h2 style="color: #1e1e2f; margin-top: 0;">نظرة عامة على النظام</h2>
             <div class="cards">
-                <div class="card"><h3>إجمالي الطلبات</h3><h1 id="totalOrders">0</h1></div>
-                <div class="card"><h3>المبيعات (ريال)</h3><h1 id="totalRevenue">0</h1></div>
-                <div class="card"><h3>عدد الفروع</h3><h1 id="branchesCount">0</h1></div>
+                <div class="card" style="border-color: #3498db;">
+                    <h3>إجمالي الطلبات</h3>
+                    <h1 id="totalOrders">0</h1>
+                </div>
+                <div class="card" style="border-color: #2ecc71;">
+                    <h3>المبيعات (ريال)</h3>
+                    <h1 id="totalRevenue">0</h1>
+                </div>
+                <div class="card" style="border-color: #f1c40f;">
+                    <h3>عدد الفروع النشطة</h3>
+                    <h1 id="branchesCount">0</h1>
+                </div>
             </div>
         </div>
 
         <!-- قسم الفروع -->
         <div id="branches" class="section">
-            <h2>إدارة الفروع</h2>
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="newBranchName" placeholder="اسم الفرع الجديد">
-                <button class="btn" onclick="addBranch()">إضافة فرع</button>
+            <h2 style="color: #1e1e2f; margin-top: 0;">إدارة الفروع</h2>
+            <div class="control-panel">
+                <input type="text" id="newBranchName" placeholder="اكتب اسم الفرع الجديد هنا...">
+                <button class="btn" onclick="addBranch()">+ إضافة فرع جديد</button>
             </div>
             <table>
-                <thead><tr><th>الرقم</th><th>اسم الفرع</th><th>إجراء</th></tr></thead>
+                <thead><tr><th>رقم الفرع</th><th>اسم الفرع</th><th>إجراءات</th></tr></thead>
                 <tbody id="branchesTable"></tbody>
             </table>
         </div>
 
         <!-- قسم المنيو -->
         <div id="menu" class="section">
-            <h2>إدارة المنيو</h2>
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="newItemName" placeholder="اسم الوجبة">
-                <input type="number" id="newItemPrice" placeholder="السعر">
-                <button class="btn" onclick="addMenuItem()">إضافة وجبة</button>
+            <h2 style="color: #1e1e2f; margin-top: 0;">إدارة قائمة الطعام (المنيو)</h2>
+            <div class="control-panel">
+                <input type="text" id="newItemName" placeholder="اسم الوجبة (مثال: بيتزا مارغريتا)">
+                <input type="number" id="newItemPrice" placeholder="السعر (ريال)" style="flex: 0.5;">
+                <button class="btn" onclick="addMenuItem()">+ إضافة وجبة للمنيو</button>
             </div>
             <table>
-                <thead><tr><th>الرقم</th><th>اسم الوجبة</th><th>السعر</th><th>إجراء</th></tr></thead>
+                <thead><tr><th>رقم الوجبة</th><th>اسم الوجبة</th><th>السعر</th><th>إجراءات</th></tr></thead>
                 <tbody id="menuTable"></tbody>
             </table>
         </div>
     </div>
 
     <script>
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+
         function showSection(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
+            
             if(id === 'summary') loadSummary();
             if(id === 'branches') loadBranches();
             if(id === 'menu') loadMenu();
         }
 
+        // --- دوال الملخص ---
         async function loadSummary() {
             const res = await fetch('/api/admin/summary');
             const data = await res.json();
@@ -87,57 +124,86 @@
             document.getElementById('branchesCount').innerText = data.branchesCount;
         }
 
+        // --- دوال الفروع ---
         async function loadBranches() {
             const res = await fetch('/api/branches');
             const branches = await res.json();
-            document.getElementById('branchesTable').innerHTML = branches.map(b => 
-                <tr><td>\</td><td>\</td>
-                <td><button class="btn btn-danger" onclick="deleteBranch(\)">حذف</button></td></tr>
-            ).join('');
+            document.getElementById('branchesTable').innerHTML = branches.map(b => `
+                <tr>
+                    <td>#${b.id}</td>
+                    <td style="font-weight:bold;">${b.name}</td>
+                    <td><button class="btn btn-danger" onclick="deleteBranch(${b.id})">🗑️ حذف الفرع</button></td>
+                </tr>
+            `).join('');
         }
 
         async function addBranch() {
-            const name = document.getElementById('newBranchName').value;
-            if(!name) return;
+            const name = document.getElementById('newBranchName').value.trim();
+            if(!name) return Toast.fire({ icon: 'warning', title: 'يرجى كتابة اسم الفرع' });
+            
             await fetch('/api/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name}) });
             document.getElementById('newBranchName').value = '';
+            Toast.fire({ icon: 'success', title: 'تمت إضافة الفرع بنجاح' });
             loadBranches();
         }
 
-        async function deleteBranch(id) {
-            if(confirm('هل أنت متأكد من الحذف؟')) {
-                await fetch('/api/branches/' + id, { method: 'DELETE' });
-                loadBranches();
-            }
+        function deleteBranch(id) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟', text: "سيتم حذف هذا الفرع نهائياً!", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#e74c3c', cancelButtonColor: '#95a5a6',
+                confirmButtonText: 'نعم، احذف!', cancelButtonText: 'إلغاء'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await fetch('/api/branches/' + id, { method: 'DELETE' });
+                    Toast.fire({ icon: 'success', title: 'تم الحذف بنجاح' });
+                    loadBranches();
+                }
+            });
         }
 
+        // --- دوال المنيو ---
         async function loadMenu() {
             const res = await fetch('/api/menu');
             const menu = await res.json();
-            document.getElementById('menuTable').innerHTML = menu.map(m => 
-                <tr><td>\</td><td>\</td><td>\ ريال</td>
-                <td><button class="btn btn-danger" onclick="deleteMenuItem(\)">حذف</button></td></tr>
-            ).join('');
+            document.getElementById('menuTable').innerHTML = menu.map(m => `
+                <tr>
+                    <td>#${m.id}</td>
+                    <td style="font-weight:bold;">${m.name}</td>
+                    <td style="color:#27ae60; font-weight:bold;">${m.price} ريال</td>
+                    <td><button class="btn btn-danger" onclick="deleteMenuItem(${m.id})">🗑️ حذف الوجبة</button></td>
+                </tr>
+            `).join('');
         }
 
         async function addMenuItem() {
-            const name = document.getElementById('newItemName').value;
+            const name = document.getElementById('newItemName').value.trim();
             const price = document.getElementById('newItemPrice').value;
-            if(!name || !price) return;
-            await fetch('/api/menu', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, price}) });
+            if(!name || !price) return Toast.fire({ icon: 'warning', title: 'يرجى إدخال اسم الوجبة والسعر' });
+            
+            await fetch('/api/menu', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, price: Number(price)}) });
             document.getElementById('newItemName').value = '';
             document.getElementById('newItemPrice').value = '';
+            Toast.fire({ icon: 'success', title: 'تمت إضافة الوجبة للمنيو' });
             loadMenu();
         }
 
-        async function deleteMenuItem(id) {
-            if(confirm('هل أنت متأكد من الحذف؟')) {
-                await fetch('/api/menu/' + id, { method: 'DELETE' });
-                loadMenu();
-            }
+        function deleteMenuItem(id) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟', text: "سيتم حذف هذه الوجبة من المنيو!", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#e74c3c', cancelButtonColor: '#95a5a6',
+                confirmButtonText: 'نعم، احذف!', cancelButtonText: 'إلغاء'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await fetch('/api/menu/' + id, { method: 'DELETE' });
+                    Toast.fire({ icon: 'success', title: 'تم الحذف بنجاح' });
+                    loadMenu();
+                }
+            });
         }
 
+        // تشغيل الملخص عند فتح الصفحة
         loadSummary();
+        setInterval(loadSummary, 10000); // تحديث الملخص كل 10 ثواني
     </script>
 </body>
 </html>
