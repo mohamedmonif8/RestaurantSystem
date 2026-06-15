@@ -5,62 +5,48 @@
     <title>لوحة الإدارة | أبو مهل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- إضافة مكتبة الرسم البياني -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; color: #fff; background: #0a0a0a; background-image: radial-gradient(circle at 15% 50%, rgba(229, 9, 20, 0.15 ), transparent 25%), radial-gradient(circle at 85% 30%, rgba(229, 9, 20, 0.15), transparent 25%); background-attachment: fixed; min-height: 100vh; }
         .glass { background: rgba(30, 30, 30, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-box { padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #E50914; transition: transform 0.3s; }
-        .login-box:hover { transform: translateY(-5px); }
-        .login-box input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: 'Cairo'; outline: none; box-sizing: border-box; background: rgba(0,0,0,0.5); color: white; transition: 0.3s; }
-        .login-box input:focus { border-color: #E50914; background: rgba(0,0,0,0.8); box-shadow: 0 0 15px rgba(229,9,20,0.2); }
-        .login-box button { width: 100%; padding: 15px; background: #E50914; color: white; border: none; border-radius: 12px; font-family: 'Cairo'; font-weight: 900; cursor: pointer; font-size: 18px; transition: 0.3s; }
-        .login-box button:hover { background: #b20710; transform: scale(1.02); }
+        .login-box { padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #E50914; }
+        .login-box input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: 'Cairo'; outline: none; box-sizing: border-box; background: rgba(0,0,0,0.5); color: white; }
+        .login-box input:focus { border-color: #E50914; }
+        .login-box button { width: 100%; padding: 15px; background: #E50914; color: white; border: none; border-radius: 12px; font-family: 'Cairo'; font-weight: 900; cursor: pointer; font-size: 18px; }
         #mainApp { display: none; }
         .sidebar { width: 250px; position: fixed; height: 100vh; padding-top: 20px; border-left: 1px solid rgba(255,255,255,0.05); z-index: 100; }
-        .sidebar h2 { text-align: center; color: #E50914; margin-bottom: 30px; font-weight: 900; text-shadow: 0 0 10px rgba(229,9,20,0.3); }
-        .sidebar button { display: block; width: 90%; margin: 5px auto; padding: 15px 20px; background: transparent; border: none; color: #aaa; text-align: right; font-family: 'Cairo'; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; border-radius: 12px; }
-        .sidebar button:hover { background: rgba(255,255,255,0.05); color: white; transform: translateX(-5px); }
+        .sidebar h2 { text-align: center; color: #E50914; margin-bottom: 30px; font-weight: 900; }
+        .sidebar button { display: block; width: 90%; margin: 5px auto; padding: 15px 20px; background: transparent; border: none; color: #aaa; text-align: right; font-family: 'Cairo'; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 12px; }
         .sidebar button.active { background: rgba(229,9,20,0.1); color: white; border-right: 4px solid #E50914; }
         .sidebar .logout { margin-top: 50px; color: #ff4757; }
-        .sidebar .logout:hover { background: rgba(255,71,87,0.1); }
         .content { margin-right: 250px; padding: 30px; }
-        .section { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); } .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .section { display: none; } .section.active { display: block; }
         .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { padding: 25px; border-radius: 20px; text-align: center; border-bottom: 4px solid #E50914; transition: all 0.3s ease; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(229,9,20,0.15); }
+        .card { padding: 25px; border-radius: 20px; text-align: center; border-bottom: 4px solid #E50914; }
         .card h3 { margin: 0; color: #aaa; font-size: 16px; }
-        .card p { margin: 10px 0 0; font-size: 35px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .card p { margin: 10px 0 0; font-size: 35px; font-weight: 900; color: #fff; }
         table { width: 100%; border-radius: 15px; overflow: hidden; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 18px 15px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
         th { background: rgba(0,0,0,0.4); color: #E50914; font-weight: 900; }
-        tr { transition: 0.3s; }
-        tr:hover { background: rgba(255,255,255,0.03); }
-        .btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; color: white; transition: 0.3s; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; color: white; }
         .btn-add { background: linear-gradient(45deg, #27ae60, #2ecc71); margin-bottom: 15px; }
         .btn-del { background: linear-gradient(45deg, #c0392b, #e74c3c); }
         .btn-view { background: linear-gradient(45deg, #2980b9, #3498db); }
-        .swal2-popup { background: rgba(20, 20, 20, 0.85) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 24px !important; color: #fff !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important; }
+        .swal2-popup { background: rgba(20, 20, 20, 0.9) !important; backdrop-filter: blur(20px) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 24px !important; color: #fff !important; }
         .swal2-title, .swal2-html-container { color: #fff !important; }
         .swal2-input, .swal2-select { background: rgba(0,0,0,0.5) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 12px !important; }
-        .swal2-input:focus { border-color: #E50914 !important; box-shadow: 0 0 10px rgba(229,9,20,0.2) !important; }
-        .swal2-close { color: #fff !important; } .swal2-close:hover { color: #E50914 !important; }
         .timeline { text-align: right; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; border-right: 4px solid #E50914; }
         .timeline-item { margin-bottom: 10px; font-size: 15px; }
         .timeline-item span { font-weight: bold; color: #ccc; display: inline-block; width: 120px; }
-        .timeline-item .time { color: #E50914; font-weight: bold; text-shadow: 0 0 5px rgba(229,9,20,0.3); }
-        
-        /* حاوية الرسم البياني */
+        .timeline-item .time { color: #E50914; font-weight: bold; }
         .chart-container { position: relative; height: 350px; width: 100%; padding: 20px; box-sizing: border-box; margin-top: 20px; border-radius: 20px; border-bottom: 4px solid #E50914; }
     </style>
 </head>
 <body>
     <div id="loginOverlay">
         <div class="login-box glass">
-            <h2 style="color:#E50914; margin-top:0; text-shadow: 0 0 10px rgba(229,9,20,0.3);">لوحة الإدارة</h2>
+            <h2 style="color:#E50914; margin-top:0;">لوحة الإدارة</h2>
             <input type="text" id="loginUser" placeholder="اسم المستخدم">
             <input type="password" id="loginPass" placeholder="كلمة المرور">
             <button onclick="login()">دخول</button>
@@ -80,21 +66,18 @@
         
         <div class="content">
             <div id="sec-dashboard" class="section active">
-                <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">📊 ملخص النظام</h2>
+                <h2 style="margin-top:0;">📊 ملخص النظام</h2>
                 <div class="cards">
                     <div class="card glass"><h3>إجمالي الطلبات</h3><p id="sum-orders">0</p></div>
                     <div class="card glass"><h3>المبيعات (ريال)</h3><p id="sum-revenue">0</p></div>
                     <div class="card glass"><h3>عدد الفروع</h3><p id="sum-branches">0</p></div>
                     <div class="card glass"><h3>المستخدمين</h3><p id="sum-users">0</p></div>
                 </div>
-                <!-- الرسم البياني -->
-                <div class="chart-container glass">
-                    <canvas id="salesChart"></canvas>
-                </div>
+                <div class="chart-container glass"><canvas id="salesChart"></canvas></div>
             </div>
 
             <div id="sec-orders" class="section">
-                <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">📋 سجل الطلبات الشامل</h2>
+                <h2 style="margin-top:0;">📋 سجل الطلبات الشامل</h2>
                 <table class="glass">
                     <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الفرع</th><th>الإجمالي</th><th>الحالة</th><th>التفاصيل</th></tr></thead>
                     <tbody id="ordersTable"></tbody>
@@ -102,19 +85,19 @@
             </div>
 
             <div id="sec-branches" class="section">
-                <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">🏪 إدارة الفروع</h2>
+                <h2 style="margin-top:0;">🏪 إدارة الفروع</h2>
                 <button class="btn btn-add" onclick="addBranch()">+ إضافة فرع جديد</button>
                 <table class="glass"><thead><tr><th>اسم الفرع</th><th>التفاصيل</th><th>الموقع</th><th>إجراء</th></tr></thead><tbody id="branchesTable"></tbody></table>
             </div>
 
             <div id="sec-menu" class="section">
-                <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">🍔 إدارة المنيو</h2>
+                <h2 style="margin-top:0;">🍔 إدارة المنيو</h2>
                 <button class="btn btn-add" onclick="addMenu()">+ إضافة صنف جديد</button>
                 <table class="glass"><thead><tr><th>الصنف</th><th>السعر</th><th>إجراء</th></tr></thead><tbody id="menuTable"></tbody></table>
             </div>
 
             <div id="sec-users" class="section">
-                <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">👥 إدارة المستخدمين</h2>
+                <h2 style="margin-top:0;">👥 إدارة المستخدمين</h2>
                 <button class="btn btn-add" onclick="addUser()">+ إضافة مستخدم</button>
                 <table class="glass"><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الصلاحية</th><th>إجراء</th></tr></thead><tbody id="usersTable"></tbody></table>
             </div>
@@ -122,133 +105,42 @@
     </div>
 
     <script>
-        let branchesList = [];
-        let allOrdersList = [];
-        let myChart = null; // متغير الرسم البياني
+        let branchesList = []; let allOrdersList = []; let myChart = null;
 
-        function checkAuth() {
-            const user = JSON.parse(localStorage.getItem('adminUser'));
-            if(user && user.role === 'admin') {
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                loadAllData();
-            } else {
-                document.getElementById('loginOverlay').style.display = 'flex';
-                document.getElementById('mainApp').style.display = 'none';
-            }
-        }
-
-        async function login() {
-            const u = document.getElementById('loginUser').value, p = document.getElementById('loginPass').value;
-            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p}) });
-            const data = await res.json();
-            if(data.success && data.user.role === 'admin') { localStorage.setItem('adminUser', JSON.stringify(data.user)); checkAuth(); }
-            else Swal.fire('خطأ', 'بيانات غير صحيحة أو لا تملك صلاحية', 'error');
-        }
+        function checkAuth() { const user = JSON.parse(localStorage.getItem('adminUser')); if(user && user.role === 'admin') { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; loadAllData(); } else { document.getElementById('loginOverlay').style.display = 'flex'; document.getElementById('mainApp').style.display = 'none'; } }
+        async function login() { const u = document.getElementById('loginUser').value, p = document.getElementById('loginPass').value; const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p}) }); const data = await res.json(); if(data.success && data.user.role === 'admin') { localStorage.setItem('adminUser', JSON.stringify(data.user)); checkAuth(); } else Swal.fire('خطأ', 'بيانات غير صحيحة', 'error'); }
         function logout() { localStorage.removeItem('adminUser'); checkAuth(); }
-
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(e => e.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
-            document.getElementById('sec-' + id).classList.add('active');
-            event.currentTarget.classList.add('active');
-            loadAllData();
-        }
+        function showSection(id) { document.querySelectorAll('.section').forEach(e => e.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active')); document.getElementById('sec-' + id).classList.add('active'); event.currentTarget.classList.add('active'); loadAllData(); }
 
         async function loadAllData() {
             const resB = await fetch('/api/branches'); branchesList = await resB.json();
             const resS = await fetch('/api/admin/summary'); const sum = await resS.json();
-            document.getElementById('sum-orders').innerText = sum.totalOrders;
-            document.getElementById('sum-revenue').innerText = sum.totalRevenue;
-            document.getElementById('sum-branches').innerText = sum.branchesCount;
-            document.getElementById('sum-users').innerText = sum.usersCount;
+            document.getElementById('sum-orders').innerText = sum.totalOrders; document.getElementById('sum-revenue').innerText = sum.totalRevenue; document.getElementById('sum-branches').innerText = sum.branchesCount; document.getElementById('sum-users').innerText = sum.usersCount;
 
             const resO = await fetch('/api/admin/orders'); allOrdersList = await resO.json();
-            document.getElementById('ordersTable').innerHTML = allOrdersList.map(o => {
-                const bName = branchesList.find(b => b.id === o.branchId)?.name || 'غير معروف';
-                return `<tr>
-                    <td>#${o.id}</td><td>${o.name}</td><td>${bName}</td><td>${o.total} ريال</td>
-                    <td><strong style="color:${o.status==='استلم الطلب'?'#2ecc71':'#E50914'}">${o.status}</strong></td>
-                    <td><button class="btn btn-view" onclick="viewOrder('${o.id}')">👁️ عرض التفاصيل</button></td>
-                </tr>`;
-            }).join('');
+            document.getElementById('ordersTable').innerHTML = allOrdersList.map(o => { const bName = branchesList.find(b => b.id === o.branchId)?.name || 'غير معروف'; return `<tr><td>#${o.id}</td><td>${o.name}</td><td>${bName}</td><td>${o.total} ريال</td><td><strong style="color:${o.status==='استلم الطلب'?'#2ecc71':'#E50914'}">${o.status}</strong></td><td><button class="btn btn-view" onclick="viewOrder('${o.id}')">👁️ عرض التفاصيل</button></td></tr>`; }).join('');
 
-            document.getElementById('branchesTable').innerHTML = branchesList.map(b => `<tr><td>${b.name}</td><td><button class="btn btn-del" onclick="del('/api/branches/${b.id}')">حذف</button></td></tr>`).join('');
-            const resM = await fetch('/api/menu'); const menu = await resM.json();
-            document.getElementById('menuTable').innerHTML = menu.map(m => `<tr><td>${m.name}</td><td>${m.price} ريال</td><td><button class="btn btn-del" onclick="del('/api/menu/${m.id}')">حذف</button></td></tr>`).join('');
-            const resU = await fetch('/api/users'); const users = await resU.json();
-            document.getElementById('usersTable').innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.username}</td><td>${u.role==='admin'?'مدير عام':'موظف فرع'}</td><td><button class="btn btn-del" onclick="del('/api/users/${u.id}')">حذف</button></td></tr>`).join('');
-            
-            updateChart(); // تحديث الرسم البياني
+            document.getElementById('branchesTable').innerHTML = branchesList.map(b => `<tr><td>${b.name}</td><td>${b.details || '---'}</td><td>${b.location ? `<a href="${b.location}" target="_blank" style="color:#E50914;">📍 خريطة</a>` : '---'}</td><td><button class="btn btn-del" onclick="del('/api/branches/${b.id}')">حذف</button></td></tr>`).join('');
+            const resM = await fetch('/api/menu'); const menu = await resM.json(); document.getElementById('menuTable').innerHTML = menu.map(m => `<tr><td>${m.name}</td><td>${m.price} ريال</td><td><button class="btn btn-del" onclick="del('/api/menu/${m.id}')">حذف</button></td></tr>`).join('');
+            const resU = await fetch('/api/users'); const users = await resU.json(); document.getElementById('usersTable').innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.username}</td><td>${u.role==='admin'?'مدير عام':'موظف فرع'}</td><td><button class="btn btn-del" onclick="del('/api/users/${u.id}')">حذف</button></td></tr>`).join('');
+            updateChart();
         }
 
-        // 📊 دالة رسم المبيعات
         function updateChart() {
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            if(myChart) myChart.destroy(); // مسح الرسم القديم لمنع التداخل
-
-            // حساب المبيعات لكل فرع
-            const branchSales = {};
-            branchesList.forEach(b => branchSales[b.id] = { name: b.name, total: 0 });
+            const ctx = document.getElementById('salesChart').getContext('2d'); if(myChart) myChart.destroy();
+            const branchSales = {}; branchesList.forEach(b => branchSales[b.id] = { name: b.name, total: 0 });
             allOrdersList.forEach(o => { if(branchSales[o.branchId]) branchSales[o.branchId].total += o.total; });
-
-            const labels = Object.values(branchSales).map(b => b.name);
-            const data = Object.values(branchSales).map(b => b.total);
-
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'المبيعات (ريال)',
-                        data: data,
-                        backgroundColor: 'rgba(229, 9, 20, 0.7)',
-                        borderColor: '#E50914',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        hoverBackgroundColor: 'rgba(229, 9, 20, 1)'
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#fff', font: { family: 'Cairo', size: 14 } } } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#aaa', font: { family: 'Cairo' } } },
-                        x: { grid: { display: false }, ticks: { color: '#aaa', font: { family: 'Cairo', size: 14 } } }
-                    }
-                }
-            });
+            myChart = new Chart(ctx, { type: 'bar', data: { labels: Object.values(branchSales).map(b => b.name), datasets: [{ label: 'المبيعات (ريال)', data: Object.values(branchSales).map(b => b.total), backgroundColor: 'rgba(229, 9, 20, 0.7)', borderColor: '#E50914', borderWidth: 2, borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { family: 'Cairo' } } } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#aaa' } }, x: { grid: { display: false }, ticks: { color: '#aaa' } } } } });
         }
 
         function viewOrder(orderId) {
-            const order = allOrdersList.find(o => o.id === orderId);
-            if(!order) return;
-            const bName = branchesList.find(b => b.id === order.branchId)?.name || 'غير معروف';
-            const t = order.timestamps || {};
-
-            const html = `
-                <div style="text-align:right; font-family:'Cairo';">
-                    <h3 style="color:#E50914; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-top:0;">معلومات الطلب #${order.id}</h3>
-                    <p style="margin:5px 0; color:#eee;"><strong>العميل:</strong> ${order.name} (${order.phone})</p>
-                    <p style="margin:5px 0; color:#eee;"><strong>الفرع:</strong> ${bName}</p>
-                    <h4 style="margin:15px 0 5px 0; color:#fff;">🛒 الأصناف:</h4>
-                    <ul style="list-style:none; padding:0; margin:0; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:10px;">
-                        ${order.items.map(i => `<li style="margin-bottom:5px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:5px; color:#ddd;">- ${i.name} <span style="color:#E50914; font-weight:bold;">(x${i.qty})</span> <span style="float:left; color:#fff;">${i.price * i.qty} ريال</span></li>`).join('')}
-                    </ul>
-                    <h3 style="margin-top:15px; text-align:left; color:#fff;">الإجمالي: <span style="color:#E50914; text-shadow: 0 0 10px rgba(229,9,20,0.3);">${order.total} ريال</span></h3>
-                    <div class="timeline">
-                        <h4 style="margin-top:0; color:#E50914; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">⏱️ سجل أوقات الطلب:</h4>
-                        <div class="timeline-item"><span>📥 استلام الطلب:</span> <span class="time">${t.received || '---'}</span></div>
-                        <div class="timeline-item"><span>👨‍🍳 بدء التجهيز:</span> <span class="time">${t.preparing || '---'}</span></div>
-                        <div class="timeline-item"><span>🛍️ الطلب جاهز:</span> <span class="time">${t.ready || '---'}</span></div>
-                        <div class="timeline-item"><span>✅ تم التسليم:</span> <span class="time">${t.delivered || '---'}</span></div>
-                    </div>
-                </div>
-            `;
+            const order = allOrdersList.find(o => o.id === orderId); if(!order) return;
+            const bName = branchesList.find(b => b.id === order.branchId)?.name || 'غير معروف'; const t = order.timestamps || {};
+            const html = `<div style="text-align:right; font-family:'Cairo';"><h3 style="color:#E50914; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-top:0;">معلومات الطلب #${order.id}</h3><p style="margin:5px 0; color:#eee;"><strong>العميل:</strong> ${order.name} (${order.phone})</p><p style="margin:5px 0; color:#eee;"><strong>الفرع:</strong> ${bName}</p><h4 style="margin:15px 0 5px 0; color:#fff;">🛒 الأصناف:</h4><ul style="list-style:none; padding:0; margin:0; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:10px;">${order.items.map(i => `<li style="margin-bottom:5px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:5px; color:#ddd;">- ${i.name} <span style="color:#E50914; font-weight:bold;">(x${i.qty})</span> <span style="float:left; color:#fff;">${i.price * i.qty} ريال</span></li>`).join('')}</ul><h3 style="margin-top:15px; text-align:left; color:#fff;">الإجمالي: <span style="color:#E50914;">${order.total} ريال</span></h3><div class="timeline"><h4 style="margin-top:0; color:#E50914; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">⏱️ سجل أوقات الطلب:</h4><div class="timeline-item"><span>📥 استلام الطلب:</span> <span class="time">${t.received || '---'}</span></div><div class="timeline-item"><span>👨‍🍳 بدء التجهيز:</span> <span class="time">${t.preparing || '---'}</span></div><div class="timeline-item"><span>🛍️ الطلب جاهز:</span> <span class="time">${t.ready || '---'}</span></div><div class="timeline-item"><span>✅ تم التسليم:</span> <span class="time">${t.delivered || '---'}</span></div></div></div>`;
             Swal.fire({ html: html, showCloseButton: true, showConfirmButton: false, width: '500px', background: 'transparent' });
         }
 
-        async function addBranch() { const { value: formValues } = await Swal.fire({title: 'إضافة فرع جديد', html: '<input id="b-name" class="swal2-input" placeholder="اسم الفرع"><input id="b-details" class="swal2-input" placeholder="وصف العنوان (مثال: شارع الملك فهد)"><input id="b-loc" class="swal2-input" placeholder="رابط خرائط جوجل (اختياري)">', focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => ({ name: document.getElementById('b-name').value, details: document.getElementById('b-details').value, location: document.getElementById('b-loc').value }) }); if(formValues && formValues.name) { await fetch('/api/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(formValues) }); loadAllData(); } }
+        async function addBranch() { const { value: formValues } = await Swal.fire({ title: 'إضافة فرع جديد', html: '<input id="b-name" class="swal2-input" placeholder="اسم الفرع"><input id="b-details" class="swal2-input" placeholder="وصف العنوان (مثال: شارع الملك فهد)"><input id="b-loc" class="swal2-input" placeholder="رابط خرائط جوجل (اختياري)">', focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => ({ name: document.getElementById('b-name').value, details: document.getElementById('b-details').value, location: document.getElementById('b-loc').value }) }); if(formValues && formValues.name) { await fetch('/api/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(formValues) }); loadAllData(); } }
         async function addMenu() { const { value: formValues } = await Swal.fire({ title: 'إضافة صنف', html: '<input id="swal-input1" class="swal2-input" placeholder="اسم الصنف"><input id="swal-input2" type="number" class="swal2-input" placeholder="السعر">', focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value] }); if(formValues && formValues[0] && formValues[1]) { await fetch('/api/menu', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: formValues[0], price: Number(formValues[1])}) }); loadAllData(); } }
         async function addUser() { const branchOptions = branchesList.map(b => `<option value="${b.id}">${b.name}</option>`).join(''); const { value: formValues } = await Swal.fire({ title: 'إضافة مستخدم', html: `<input id="u-name" class="swal2-input" placeholder="الاسم الكامل"><input id="u-user" class="swal2-input" placeholder="اسم المستخدم (للدخول)"><input id="u-pass" class="swal2-input" placeholder="كلمة المرور"><select id="u-role" class="swal2-select" style="width:73%;"><option value="branch">موظف فرع</option><option value="admin">مدير عام</option></select><select id="u-branch" class="swal2-select" style="width:73%;"><option value="">بدون فرع (للمدير)</option>${branchOptions}</select>`, focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => ({ name: document.getElementById('u-name').value, username: document.getElementById('u-user').value, password: document.getElementById('u-pass').value, role: document.getElementById('u-role').value, branchId: document.getElementById('u-branch').value }) }); if(formValues && formValues.username) { await fetch('/api/users', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(formValues) }); loadAllData(); } }
         async function del(url) { if((await Swal.fire({title:'هل أنت متأكد؟', icon:'warning', showCancelButton:true, confirmButtonText:'نعم، احذف', cancelButtonText:'إلغاء', confirmButtonColor:'#e74c3c', background: 'transparent'})).isConfirmed) { await fetch(url, { method: 'DELETE' }); loadAllData(); } }
@@ -257,5 +149,3 @@
     </script>
 </body>
 </html>
-
-

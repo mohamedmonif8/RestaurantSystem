@@ -7,75 +7,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { 
-            --primary: #E50914; 
-            --primary-dark: #B20710; 
-            --bg: #0a0a0a; 
-            --text: #fff; 
-            --glass-bg: rgba(30, 30, 30, 0.6 );
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); padding-bottom: 80px; -webkit-tap-highlight-color: transparent; background-image: radial-gradient(circle at 50% 0%, rgba(229, 9, 20, 0.15), transparent 50%); background-attachment: fixed; }
-        
-        .glass { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
-        
-        /* الهيدر */
-        .app-header { padding: 30px 20px 20px; text-align: center; position: relative; z-index: 10; border-bottom: 1px solid var(--glass-border); border-radius: 0 0 30px 30px; }
-        .logo-container { width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); overflow: hidden; background: #000; }
+        :root { var(--primary ): #E50914; var(--primary-dark): #B20710; var(--bg): #0a0a0a; var(--text): #fff; var(--glass-bg): rgba(30, 30, 30, 0.6); var(--glass-border): rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Cairo', sans-serif; background: #0a0a0a; margin: 0; padding: 0; color: #fff; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; background-image: radial-gradient(circle at 50% 0%, rgba(229, 9, 20, 0.15), transparent 50%); background-attachment: fixed; }
+        .glass { background: rgba(30, 30, 30, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .app-header { padding: 30px 20px 20px; text-align: center; position: relative; z-index: 10; border-bottom: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0 0 30px 30px; }
+        .logo-container { width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; border: 3px solid #E50914; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); overflow: hidden; background: #000; }
         .app-logo { width: 100%; height: 100%; object-fit: cover; }
         .app-header h1 { margin: 0; font-size: 28px; font-weight: 900; text-shadow: 0 2px 10px rgba(229,9,20,0.5); }
-        
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-        
-        /* الصفحات */
         .page { display: none; animation: fadeIn 0.3s ease-out; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* المدخلات والأزرار */
-        input { width: 100%; padding: 15px; margin: 10px 0 20px; border: 1px solid var(--glass-border); border-radius: 12px; font-family: 'Cairo'; font-size: 16px; outline: none; transition: 0.3s; background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(229, 9, 20, 0.2); }
-        .btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; font-weight: 900; box-shadow: 0 6px 20px rgba(229, 9, 20, 0.3); transition: 0.2s; }
-        .btn:active { transform: scale(0.97); background: var(--primary-dark); }
-        
-        /* البطاقات */
-        .card { padding: 20px; border-radius: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; transition: 0.3s; }
+        input { width: 100%; padding: 15px; margin: 10px 0 20px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; font-family: 'Cairo'; font-size: 16px; outline: none; transition: 0.3s; background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; }
+        input:focus { border-color: #E50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.2); }
+        .btn { width: 100%; padding: 15px; background: #E50914; color: #fff; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; font-weight: 900; box-shadow: 0 6px 20px rgba(229, 9, 20, 0.3); transition: 0.2s; }
+        .btn:active { transform: scale(0.97); background: #B20710; }
+        .card { padding: 20px; border-radius: 16px; margin-bottom: 15px; transition: 0.3s; }
         .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: 16px; margin-bottom: 15px; }
-        .add-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--glass-border); padding: 8px 20px; border-radius: 10px; font-weight: 700; font-family: 'Cairo'; cursor: pointer; transition: 0.2s; }
-        .add-btn:active { background: var(--primary); border-color: var(--primary); }
-        
-        .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 10px; border: 1px solid var(--glass-border); }
+        .add-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.08); padding: 8px 20px; border-radius: 10px; font-weight: 700; font-family: 'Cairo'; cursor: pointer; transition: 0.2s; }
+        .add-btn:active { background: #E50914; border-color: #E50914; }
+        .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); }
         .qty-btn { background: transparent; border: none; color: white; font-size: 20px; width: 30px; height: 30px; cursor: pointer; }
-        
-        /* شريط التنقل السفلي */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-around; align-items: center; z-index: 1000; border-top: 1px solid var(--glass-border); border-radius: 25px 25px 0 0; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-around; align-items: center; z-index: 1000; border-top: 1px solid rgba(255, 255, 255, 0.08); border-radius: 25px 25px 0 0; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; }
-        .nav-item.active { color: var(--primary); transform: translateY(-3px); }
+        .nav-item.active { color: #E50914; transform: translateY(-3px); }
         .nav-icon { font-size: 24px; margin-bottom: 3px; }
-        .cart-badge { position: absolute; top: -5px; right: -10px; background: var(--primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; }
-        
-        /* شاشة الدخول */
-        #loginScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index: 9999; display:flex; flex-direction:column; justify-content:center; padding:20px; box-sizing:border-box; }
-        
-        /* الفواتير المنبثقة */
+        .cart-badge { position: absolute; top: -5px; right: -10px; background: #E50914; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; }
+        #loginScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0a; z-index: 9999; display:flex; flex-direction:column; justify-content:center; padding:20px; box-sizing:border-box; }
         .swal2-popup { background: rgba(20, 20, 20, 0.9) !important; backdrop-filter: blur(20px) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 24px !important; color: #fff !important; }
         .swal2-title, .swal2-html-container { color: #fff !important; }
     </style>
 </head>
 <body>
-
-    <!-- شاشة الدخول -->
     <div id="loginScreen">
         <div class="logo-container" style="width:120px; height:120px;"><img src="https://i.pinimg.com/736x/ec/d3/11/ecd3110c3c36f5deabea7b9cd9257ed0.jpg" class="app-logo"></div>
-        <h2 style="text-align:center; color:var(--primary );">تسجيل الدخول</h2>
+        <h2 style="text-align:center; color:#E50914;">تسجيل الدخول</h2>
         <div class="glass" style="padding:20px; border-radius:20px;">
             <input type="text" id="lName" placeholder="الاسم الكريم">
             <input type="tel" id="lPhone" placeholder="رقم الجوال">
-            <input type="password" id="lPass" placeholder="كلمة المرور (اختياري)">
+            <input type="password" id="lPass" placeholder="كلمة المرور (اختياري )">
             <button class="btn" onclick="login()">دخول</button>
         </div>
     </div>
 
-    <!-- التطبيق الرئيسي -->
     <div id="mainApp" style="display:none;">
         <div class="app-header glass">
             <div class="logo-container"><img src="https://i.pinimg.com/736x/ec/d3/11/ecd3110c3c36f5deabea7b9cd9257ed0.jpg" class="app-logo"></div>
@@ -83,40 +56,36 @@
         </div>
 
         <div class="container">
-            <!-- 1. الرئيسية (الفروع والمنيو ) -->
             <div id="page-home" class="page active">
                 <div id="branchesView">
-                    <h3 style="color:var(--primary);">📍 اختر الفرع</h3>
+                    <h3 style="color:#E50914;">📍 اختر الفرع</h3>
                     <div id="branchesContainer"></div>
                 </div>
                 <div id="menuView" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h3 style="margin:0; color:var(--primary);">🍔 المنيو</h3>
-                        <button onclick="showBranches()" style="background:none;border:none;color:#aaa;font-family:'Cairo';cursor:pointer;text-decoration:underline;">تغيير الفرع</button>
+                        <h3 style="margin:0; color:#E50914;">🍔 المنيو</h3>
+                        <button onclick="showBranches( )" style="background:none;border:none;color:#aaa;font-family:'Cairo';cursor:pointer;text-decoration:underline;">تغيير الفرع</button>
                     </div>
                     <div id="menuContainer"></div>
                 </div>
             </div>
 
-            <!-- 2. السلة -->
             <div id="page-cart" class="page">
-                <h3 style="color:var(--primary); text-align:center;">🛒 سلة المشتريات</h3>
+                <h3 style="color:#E50914; text-align:center;">🛒 سلة المشتريات</h3>
                 <div id="cartItemsContainer" class="glass" style="padding:15px; border-radius:16px; min-height:200px;"></div>
                 <div class="glass" style="padding:20px; border-radius:16px; margin-top:15px; text-align:center;">
-                    <h3 style="margin:0 0 15px 0;">الإجمالي: <span id="cartTotal" style="color:var(--primary);">0</span> ريال</h3>
+                    <h3 style="margin:0 0 15px 0;">الإجمالي: <span id="cartTotal" style="color:#E50914;">0</span> ريال</h3>
                     <button class="btn" onclick="checkout()" id="checkoutBtn">تأكيد الطلب</button>
                 </div>
             </div>
 
-            <!-- 3. طلباتي -->
             <div id="page-orders" class="page">
-                <h3 style="color:var(--primary); text-align:center;">🧾 سجل طلباتي</h3>
+                <h3 style="color:#E50914; text-align:center;">🧾 سجل طلباتي</h3>
                 <div id="myOrdersContainer"></div>
             </div>
 
-            <!-- 4. حسابي -->
             <div id="page-profile" class="page">
-                <h3 style="color:var(--primary); text-align:center;">👤 إعدادات الحساب</h3>
+                <h3 style="color:#E50914; text-align:center;">👤 إعدادات الحساب</h3>
                 <div class="glass" style="padding:20px; border-radius:16px;">
                     <label style="color:#aaa; font-size:14px;">الاسم</label>
                     <input type="text" id="pName">
@@ -130,7 +99,6 @@
             </div>
         </div>
 
-        <!-- شريط التنقل السفلي -->
         <div class="bottom-nav glass">
             <div class="nav-item active" onclick="nav('home')"><div class="nav-icon">🏠</div>الرئيسية</div>
             <div class="nav-item" onclick="nav('cart')"><div class="nav-icon">🛒<span class="cart-badge" id="cartBadge">0</span></div>السلة</div>
@@ -140,66 +108,28 @@
     </div>
 
     <script>
-        let userData = { name:'', phone:'', password:'', orders:[] };
-        let orderData = { branchId: '', items: [], total: 0 };
-        let cart = {};
+        let userData = { name:'', phone:'', password:'', orders:[] }; let orderData = { branchId: '', items: [], total: 0 }; let cart = {};
 
-        window.onload = () => {
-            const u = localStorage.getItem('abuMahalUser');
-            if(u) { 
-                userData = JSON.parse(u); 
-                if(!userData.orders) userData.orders = [];
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                loadBranches(); 
-            }
-        };
+        window.onload = () => { const u = localStorage.getItem('abuMahalUser'); if(u) { userData = JSON.parse(u); if(!userData.orders) userData.orders = []; document.getElementById('loginScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; loadBranches(); } };
+        function login() { const n = document.getElementById('lName').value, p = document.getElementById('lPhone').value, pass = document.getElementById('lPass').value; if(!n || !p) return Swal.fire('تنبيه', 'الرجاء إدخال الاسم ورقم الجوال', 'warning'); userData = { name:n, phone:p, password:pass, orders:[] }; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); document.getElementById('loginScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; loadBranches(); }
+        function logout() { localStorage.removeItem('abuMahalUser'); location.reload(); }
 
-        function login() {
-            const n = document.getElementById('lName').value, p = document.getElementById('lPhone').value, pass = document.getElementById('lPass').value;
-            if(!n || !p) return Swal.fire('تنبيه', 'الرجاء إدخال الاسم ورقم الجوال', 'warning');
-            userData = { name:n, phone:p, password:pass, orders:[] };
-            localStorage.setItem('abuMahalUser', JSON.stringify(userData));
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            loadBranches();
-        }
-
-        function logout() {
-            localStorage.removeItem('abuMahalUser');
-            location.reload();
-        }
-
-        function nav(page) {
-            document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-            document.getElementById('page-' + page).classList.add('active');
-            event.currentTarget.classList.add('active');
-            window.scrollTo(0,0);
-            
-            if(page === 'cart') renderCart();
-            if(page === 'orders') loadMyOrders();
-            if(page === 'profile') {
-                document.getElementById('pName').value = userData.name;
-                document.getElementById('pPhone').value = userData.phone;
-                document.getElementById('pPass').value = userData.password || '';
-            }
-        }
-
-        function saveProfile() {
-            userData.name = document.getElementById('pName').value;
-            userData.phone = document.getElementById('pPhone').value;
-            userData.password = document.getElementById('pPass').value;
-            localStorage.setItem('abuMahalUser', JSON.stringify(userData));
-            Swal.fire({title:'تم الحفظ', icon:'success', background:'rgba(20,20,20,0.9)', color:'#fff'});
-        }
+        function nav(page) { document.querySelectorAll('.page').forEach(e => e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); document.getElementById('page-' + page).classList.add('active'); event.currentTarget.classList.add('active'); window.scrollTo(0,0); if(page === 'cart') renderCart(); if(page === 'orders') loadMyOrders(); if(page === 'profile') { document.getElementById('pName').value = userData.name; document.getElementById('pPhone').value = userData.phone; document.getElementById('pPass').value = userData.password || ''; } }
+        function saveProfile() { userData.name = document.getElementById('pName').value; userData.phone = document.getElementById('pPhone').value; userData.password = document.getElementById('pPass').value; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); Swal.fire({title:'تم الحفظ', icon:'success', background:'rgba(20,20,20,0.9)', color:'#fff'}); }
 
         async function loadBranches() {
             const res = await fetch('/api/branches'); const b = await res.json();
             document.getElementById('branchesContainer').innerHTML = b.map(x => `
-                <div class="card glass" onclick="selectBranch('${x.id}')" style="cursor:pointer;">
-                    <div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('')"><div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('')"><div style="font-size:30px;">🏪</div>
-                    <div style="flex-grow:1;"><h4 style="margin:0 0 5px 0;"></h4><span style="color:#aaa;font-size:12px;"></span></div><span style="color:var(--primary);font-size:12px; font-weight:bold;">مفتوح الآن</span></div>
+                <div class="card glass" style="display:flex; flex-direction:column; align-items:stretch; gap:10px;">
+                    <div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('${x.id}')">
+                        <div style="font-size:30px;">🏪</div>
+                        <div style="flex-grow:1;">
+                            <h4 style="margin:0 0 5px 0;">${x.name}</h4>
+                            <span style="color:#aaa;font-size:12px;">${x.details || 'فرع معتمد'}</span>
+                        </div>
+                        <span style="color:#E50914;font-size:12px; font-weight:bold;">مفتوح الآن</span>
+                    </div>
+                    ${x.location ? `<a href="${x.location}" target="_blank" style="display:block; text-align:center; background:rgba(229,9,20,0.1); color:#E50914; padding:10px; border-radius:10px; text-decoration:none; font-weight:bold; border:1px solid rgba(229,9,20,0.3);">📍 الاتجاه للفرع (خرائط جوجل)</a>` : ''}
                 </div>`).join('');
             showBranches();
         }
@@ -207,140 +137,32 @@
         function showBranches() { document.getElementById('branchesView').style.display = 'block'; document.getElementById('menuView').style.display = 'none'; }
         function selectBranch(id) { orderData.branchId = id; document.getElementById('branchesView').style.display = 'none'; document.getElementById('menuView').style.display = 'block'; loadMenu(); }
 
-        async function loadMenu() {
-            const res = await fetch('/api/menu'); const m = await res.json();
-            document.getElementById('menuContainer').innerHTML = m.filter(x=>x.available).map(x => `
-                <div class="menu-item glass">
-                    <div><h4 style="margin:0 0 5px 0;">${x.name}</h4><p style="margin:0;color:var(--primary);font-weight:bold;">${x.price} ريال</p></div>
-                    <div id="act-${x.id}"><button class="add-btn" onclick="add('${x.id}','${x.name}',${x.price})">+ إضافة</button></div>
-                </div>`).join('');
-            updateAllUI();
-        }
+        async function loadMenu() { const res = await fetch('/api/menu'); const m = await res.json(); document.getElementById('menuContainer').innerHTML = m.filter(x=>x.available).map(x => `<div class="menu-item glass"><div><h4 style="margin:0 0 5px 0;">${x.name}</h4><p style="margin:0;color:#E50914;font-weight:bold;">${x.price} ريال</p></div><div id="act-${x.id}"><button class="add-btn" onclick="add('${x.id}','${x.name}',${x.price})">+ إضافة</button></div></div>`).join(''); updateAllUI(); }
 
-        function add(id, name, price) { 
-            if(!cart[id]) cart[id] = {name, price, qty:0}; 
-            cart[id].qty++; 
-            updateAllUI(); 
-            Swal.fire({toast:true, position:'top', icon:'success', title:'تمت الإضافة للسلة', showConfirmButton:false, timer:1000, background:'rgba(20,20,20,0.9)', color:'#fff'});
-        }
+        function add(id, name, price) { if(!cart[id]) cart[id] = {name, price, qty:0}; cart[id].qty++; updateAllUI(); Swal.fire({toast:true, position:'top', icon:'success', title:'تمت الإضافة للسلة', showConfirmButton:false, timer:1000, background:'rgba(20,20,20,0.9)', color:'#fff'}); }
         function change(id, val) { cart[id].qty += val; if(cart[id].qty<=0) delete cart[id]; updateAllUI(); }
 
         function updateAllUI() {
             let t = 0, count = 0; orderData.items = [];
-            for(let i in cart) { 
-                t += cart[i].price * cart[i].qty; count += cart[i].qty;
-                orderData.items.push({id:i, name:cart[i].name, price:cart[i].price, qty:cart[i].qty}); 
-                const c = document.getElementById(`act-${i}`);
-                if(c) c.innerHTML = `<div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div>`;
-            }
-            orderData.total = t;
-            document.getElementById('cartTotal').innerText = t;
-            const badge = document.getElementById('cartBadge');
-            if(count > 0) { badge.style.display = 'block'; badge.innerText = count; } else { badge.style.display = 'none'; }
-            
-            // إعادة الأزرار للأصناف المحذوفة من السلة
-            document.querySelectorAll('.menu-item').forEach(el => {
-                const actDiv = el.querySelector('[id^="act-"]');
-                const id = actDiv.id.replace('act-','');
-                if(!cart[id]) {
-                    const n = el.querySelector('h4').innerText, p = parseInt(el.querySelector('p').innerText);
-                    actDiv.innerHTML = `<button class="add-btn" onclick="add('${id}','${n}',${p})">+ إضافة</button>`;
-                }
-            });
+            for(let i in cart) { t += cart[i].price * cart[i].qty; count += cart[i].qty; orderData.items.push({id:i, name:cart[i].name, price:cart[i].price, qty:cart[i].qty}); const c = document.getElementById(`act-${i}`); if(c) c.innerHTML = `<div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div>`; }
+            orderData.total = t; document.getElementById('cartTotal').innerText = t; const badge = document.getElementById('cartBadge'); if(count > 0) { badge.style.display = 'block'; badge.innerText = count; } else { badge.style.display = 'none'; }
+            document.querySelectorAll('.menu-item').forEach(el => { const actDiv = el.querySelector('[id^="act-"]'); const id = actDiv.id.replace('act-',''); if(!cart[id]) { const n = el.querySelector('h4').innerText, p = parseInt(el.querySelector('p').innerText); actDiv.innerHTML = `<button class="add-btn" onclick="add('${id}','${n}',${p})">+ إضافة</button>`; } });
             if(document.getElementById('page-cart').classList.contains('active')) renderCart();
         }
 
-        function renderCart() {
-            const c = document.getElementById('cartItemsContainer');
-            if(Object.keys(cart).length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">السلة فارغة 🛒</p>'; return; }
-            c.innerHTML = Object.keys(cart).map(i => `
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0;">
-                    <div><h4 style="margin:0;">${cart[i].name}</h4><span style="color:var(--primary);">${cart[i].price * cart[i].qty} ريال</span></div>
-                    <div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div>
-                </div>
-            `).join('');
-        }
+        function renderCart() { const c = document.getElementById('cartItemsContainer'); if(Object.keys(cart).length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">السلة فارغة 🛒</p>'; return; } c.innerHTML = Object.keys(cart).map(i => `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0;"><div><h4 style="margin:0;">${cart[i].name}</h4><span style="color:#E50914;">${cart[i].price * cart[i].qty} ريال</span></div><div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div></div>`).join(''); }
 
         async function checkout() {
-            if(orderData.items.length === 0) return Swal.fire('تنبيه', 'السلة فارغة', 'warning');
-            if(!orderData.branchId) return Swal.fire('تنبيه', 'الرجاء اختيار الفرع أولاً', 'warning');
-            
+            if(orderData.items.length === 0) return Swal.fire('تنبيه', 'السلة فارغة', 'warning'); if(!orderData.branchId) return Swal.fire('تنبيه', 'الرجاء اختيار الفرع أولاً', 'warning');
             document.getElementById('checkoutBtn').disabled = true; document.getElementById('checkoutBtn').innerText = 'جاري الإرسال...';
-            const res = await fetch('/api/orders', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: userData.name, phone: userData.phone, branchId: orderData.branchId, items: orderData.items, total: orderData.total}) });
-            const data = await res.json();
-            
-            if(data.success) { 
-                // حفظ الطلب في السجل المحلي للعميل
-                const newOrder = { id: data.orderId, date: new Date().toLocaleDateString('ar-SA'), time: new Date().toLocaleTimeString('ar-SA'), items: orderData.items, total: orderData.total, status: 'استلام الطلب' };
-                userData.orders.unshift(newOrder);
-                localStorage.setItem('abuMahalUser', JSON.stringify(userData));
-                
-                cart = {}; updateAllUI();
-                document.getElementById('checkoutBtn').disabled = false; document.getElementById('checkoutBtn').innerText = 'تأكيد الطلب';
-                
-                Swal.fire({
-                    title: 'تم الطلب بنجاح! 🎉',
-                    html: `رقم طلبك: <strong style="color:#E50914;">#${data.orderId}</strong>  
-يمكنك متابعة حالة الطلب من قسم "طلباتي"`,
-                    icon: 'success',
-                    background: 'rgba(20,20,20,0.9)',
-                    color: '#fff',
-                    confirmButtonColor: '#E50914'
-                }).then(() => nav('orders'));
-            }
+            const res = await fetch('/api/orders', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: userData.name, phone: userData.phone, branchId: orderData.branchId, items: orderData.items, total: orderData.total}) }); const data = await res.json();
+            if(data.success) { const newOrder = { id: data.orderId, date: new Date().toLocaleDateString('ar-SA'), time: new Date().toLocaleTimeString('ar-SA'), items: orderData.items, total: orderData.total, status: 'استلام الطلب' }; userData.orders.unshift(newOrder); localStorage.setItem('abuMahalUser', JSON.stringify(userData)); cart = {}; updateAllUI(); document.getElementById('checkoutBtn').disabled = false; document.getElementById('checkoutBtn').innerText = 'تأكيد الطلب'; Swal.fire({ title: 'تم الطلب بنجاح! 🎉', html: `رقم طلبك: <strong style="color:#E50914;">#${data.orderId}</strong>  
+يمكنك متابعة حالة الطلب من قسم "طلباتي"`, icon: 'success', background: 'rgba(20,20,20,0.9)', color: '#fff', confirmButtonColor: '#E50914' }).then(() => nav('orders')); }
         }
 
-        function loadMyOrders() {
-            const c = document.getElementById('myOrdersContainer');
-            if(!userData.orders || userData.orders.length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">لا توجد طلبات سابقة 🧾</p>'; return; }
-            
-            c.innerHTML = userData.orders.map(o => `
-                <div class="glass" style="padding:15px; border-radius:16px; margin-bottom:15px; border-right: 4px solid var(--primary);">
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;">
-                        <strong>طلب #${o.id}</strong>
-                        <span style="color:#aaa; font-size:12px;">${o.date} - ${o.time}</span>
-                    </div>
-                    <div style="font-size:14px; color:#ddd; margin-bottom:10px;">
-                        ${o.items.map(i => `<div>${i.qty}x ${i.name}</div>`).join('')}
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong style="color:var(--primary);">${o.total} ريال</strong>
-                        <button class="btn" style="padding:5px 15px; font-size:12px; width:auto;" onclick="trackOrder('${o.id}')">تتبع الحالة</button>
-                    </div>
-                </div>
-            `).join('');
-        }
+        function loadMyOrders() { const c = document.getElementById('myOrdersContainer'); if(!userData.orders || userData.orders.length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">لا توجد طلبات سابقة 🧾</p>'; return; } c.innerHTML = userData.orders.map(o => `<div class="glass" style="padding:15px; border-radius:16px; margin-bottom:15px; border-right: 4px solid #E50914;"><div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;"><strong>طلب #${o.id}</strong><span style="color:#aaa; font-size:12px;">${o.date} - ${o.time}</span></div><div style="font-size:14px; color:#ddd; margin-bottom:10px;">${o.items.map(i => `<div>${i.qty}x ${i.name}</div>`).join('')}</div><div style="display:flex; justify-content:space-between; align-items:center;"><strong style="color:#E50914;">${o.total} ريال</strong><button class="btn" style="padding:5px 15px; font-size:12px; width:auto;" onclick="trackOrder('${o.id}')">تتبع الحالة</button></div></div>`).join(''); }
 
-        async function trackOrder(id) {
-            Swal.fire({title: 'جاري التحديث...', background: 'rgba(20,20,20,0.9)', color: '#fff', didOpen: () => Swal.showLoading()});
-            const res = await fetch('/api/orders/track/' + id);
-            const o = await res.json();
-            
-            if(o.error) return Swal.fire('خطأ', 'الطلب غير موجود', 'error');
-            
-            // تحديث الحالة في السجل المحلي
-            const orderIndex = userData.orders.findIndex(x => x.id === id);
-            if(orderIndex > -1) { userData.orders[orderIndex].status = o.status; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); }
-            
-            let icon = '🍳'; let color = '#fff';
-            if(o.status === 'قيد التجهيز') { icon = '👨‍🍳'; color = '#f39c12'; }
-            if(o.status === 'الطلب جاهز') { icon = '🛍️'; color = '#2ecc71'; }
-            if(o.status === 'استلم الطلب') { icon = '✅'; color = '#E50914'; }
-
-            Swal.fire({
-                html: `
-                    <div style="font-size:50px; margin-bottom:10px;">${icon}</div>
-                    <h3 style="margin:0; color:${color};">${o.status}</h3>
-                    <p style="color:#aaa; margin-top:5px;">طلب #${id}</p>
-                `,
-                background: 'rgba(20,20,20,0.9)',
-                color: '#fff',
-                confirmButtonColor: '#E50914',
-                confirmButtonText: 'حسناً'
-            });
-        }
+        async function trackOrder(id) { Swal.fire({title: 'جاري التحديث...', background: 'rgba(20,20,20,0.9)', color: '#fff', didOpen: () => Swal.showLoading()}); const res = await fetch('/api/orders/track/' + id); const o = await res.json(); if(o.error) return Swal.fire('خطأ', 'الطلب غير موجود', 'error'); const orderIndex = userData.orders.findIndex(x => x.id === id); if(orderIndex > -1) { userData.orders[orderIndex].status = o.status; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); } let icon = '🍳'; let color = '#fff'; if(o.status === 'قيد التجهيز') { icon = '👨‍🍳'; color = '#f39c12'; } if(o.status === 'الطلب جاهز') { icon = '🛍️'; color = '#2ecc71'; } if(o.status === 'استلم الطلب') { icon = '✅'; color = '#E50914'; } Swal.fire({ html: `<div style="font-size:50px; margin-bottom:10px;">${icon}</div><h3 style="margin:0; color:${color};">${o.status}</h3><p style="color:#aaa; margin-top:5px;">طلب #${id}</p>`, background: 'rgba(20,20,20,0.9)', color: '#fff', confirmButtonColor: '#E50914', confirmButtonText: 'حسناً' }); }
     </script>
 </body>
 </html>
-
-
