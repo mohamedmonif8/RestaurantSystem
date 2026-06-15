@@ -2,173 +2,312 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق العميل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>أبو مهل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #f0f2f5; padding: 20px; margin: 0; color: #333; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05 ); }
-        h2 { text-align: center; color: #ff5722; font-weight: 700; margin-bottom: 20px; }
-        h3 { font-size: 18px; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .btn { width: 100%; padding: 14px; margin: 10px 0; background: #ff5722; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-family: 'Cairo'; font-weight: 600; transition: 0.3s; }
-        .btn:hover:not(:disabled) { background: #e64a19; transform: translateY(-2px); }
-        .btn:disabled { background: #d3d3d3; cursor: not-allowed; transform: none; }
-        .step { display: none; animation: fadeIn 0.5s; } .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Cairo'; font-size: 15px; transition: 0.3s; }
-        input:focus, select:focus { border-color: #ff5722; outline: none; box-shadow: 0 0 5px rgba(255,87,34,0.3); }
-        .menu-item { border: 1px solid #eee; padding: 15px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; background: #fafafa; transition: 0.3s; }
-        .menu-item:hover { border-color: #ff5722; background: white; }
-        .cart-summary { background: #fff3e0; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px dashed #ffb74d; }
-        .qty-btn { background: #eee; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .qty-btn:hover { background: #ddd; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; }
+        :root { 
+            --primary: #FFC107; /* أصفر هنجرستيشن */
+            --primary-dark: #FF9800;
+            --bg: #f4f5f7;
+            --text: #2d3436;
+            --glass-bg: rgba(255, 255, 255, 0.75 );
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+        
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
+        
+        /* الهيدر العلوي */
+        .app-header { background: var(--primary); padding: 30px 20px 20px; border-radius: 0 0 30px 30px; color: #fff; text-align: center; box-shadow: 0 4px 20px rgba(255, 193, 7, 0.4); position: relative; z-index: 10; }
+        .app-header h1 { margin: 0; font-size: 28px; font-weight: 800; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .app-header p { margin: 5px 0 0; font-size: 14px; opacity: 0.9; }
+        
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* التأثير الزجاجي (Glassmorphism) */
+        .glass-panel { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 25px; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); 
+            margin-bottom: 20px;
+        }
+
+        /* التنقل بين الشاشات */
+        .step { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .step.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* الحقول والأزرار */
+        input { width: 100%; padding: 15px; margin: 10px 0 20px; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-family: 'Cairo'; font-size: 16px; transition: 0.3s; background: rgba(255,255,255,0.9); }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2); }
+        
+        .btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; font-family: 'Cairo'; font-weight: 700; transition: 0.2s; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3); }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+        /* بطاقات الفروع */
+        .branch-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 2px solid transparent; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .branch-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .branch-icon { width: 50px; height: 50px; background: #fff8e1; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
+
+        /* المنيو */
+        .menu-item { background: white; padding: 15px; margin-bottom: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .menu-info h4 { margin: 0 0 5px 0; font-size: 18px; color: var(--text); }
+        .menu-info p { margin: 0; color: var(--primary-dark); font-weight: 700; font-size: 16px; }
+        
+        .add-btn { background: #fff8e1; color: var(--primary-dark); border: none; padding: 8px 20px; border-radius: 20px; font-family: 'Cairo'; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .add-btn:active { background: var(--primary); color: white; }
+        
+        .qty-control { display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 5px; border-radius: 20px; }
+        .qty-btn { background: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; font-size: 18px; color: var(--text); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* السلة العائمة الزجاجية */
+        .floating-cart { position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(45, 52, 54, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: white; padding: 15px 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(150%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .floating-cart.show { transform: translateY(0); }
+        .cart-total { font-size: 18px; font-weight: 700; }
+        .checkout-btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 12px; font-family: 'Cairo'; font-weight: 700; font-size: 16px; cursor: pointer; }
+
+        /* التتبع */
+        .track-status { text-align: center; padding: 30px 0; }
+        .status-circle { width: 100px; height: 100px; background: #fff8e1; border-radius: 50%; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 40px; box-shadow: 0 0 0 10px rgba(255, 193, 7, 0.2); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🍔 مطعمنا</h2>
-        
-        <div id="step1" class="step active">
-            <h3>1. تسجيل البيانات</h3>
-            <input type="text" id="cName" placeholder="الاسم الكريم" required>
-            <input type="tel" id="cPhone" placeholder="رقم الجوال" required>
-            <button class="btn" onclick="nextStep(2)">التالي</button>
-        </div>
 
-        <div id="step2" class="step">
-            <h3>2. اختر نوع الخدمة</h3>
-            <button class="btn" onclick="loadBranches()">استلام من الفرع</button>
-            <button class="btn" disabled>توصيل (قريباً)</button>
-        </div>
-
-        <div id="step3" class="step">
-            <h3>3. اختر الفرع</h3>
-            <select id="branchSelect"></select>
-            <button class="btn" onclick="loadMenu()">التالي</button>
-        </div>
-
-        <div id="step4" class="step">
-            <h3>4. قائمة الطعام</h3>
-            <div id="menuContainer"></div>
-            <div class="cart-summary">
-                <h4 style="margin-top:0;">🛒 سلة المشتريات</h4>
-                <div id="cartItemsContainer"></div>
-                <hr style="border: 0; border-top: 1px solid #ffcc80; margin: 15px 0;">
-                <h3 style="margin:0; color:#e64a19;">الإجمالي: <span id="cartTotal">0</span> ريال</h3>
-                <button class="btn" onclick="checkout()" id="checkoutBtn" disabled style="margin-top:15px;">تأكيد الطلب والدفع</button>
-            </div>
-        </div>
-
-        <div id="step5" class="step">
-            <h3 style="text-align:center; color: #2e7d32;">🎉 تم إرسال الطلب بنجاح!</h3>
-            <div style="text-align: center; padding: 30px 20px; background: #e8f5e9; border-radius: 10px; margin-top:20px;">
-                <p style="font-size: 18px; color: #555;">حالة الطلب الآن:</p>
-                <h2 id="orderStatus" style="color: #ff5722; font-size: 28px; margin: 10px 0;">جاري التحميل...</h2>
-                <div class="loader" style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #c8e6c9; border-top: 4px solid #4caf50; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            </div>
-        </div>
+    <div class="app-header">
+        <h1>أبو مهل 🍔</h1>
+        <p id="headerDesc">أسرع توصيل، أطعم أكل</p>
     </div>
 
-    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    <div class="container">
+        
+        <!-- الخطوة 1: تسجيل الدخول الذكي -->
+        <div id="step-login" class="step glass-panel">
+            <h3 style="text-align: center; margin-top: 0;">مرحباً بك يا غالي 👋</h3>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 25px;">سجل بياناتك مرة واحدة فقط، وسنتذكرك دائماً!</p>
+            
+            <label style="font-weight: 600; margin-bottom: 5px; display: block;">الاسم الكريم</label>
+            <input type="text" id="cName" placeholder="مثال: محمد عبدالله">
+            
+            <label style="font-weight: 600; margin-bottom: 5px; display: block;">رقم الجوال</label>
+            <input type="tel" id="cPhone" placeholder="05XXXXXXXX">
+            
+            <button class="btn" onclick="saveUserAndProceed()">دخول</button>
+        </div>
+
+        <!-- الخطوة 2: اختيار الفرع -->
+        <div id="step-branches" class="step">
+            <h3 style="margin-top: 0; margin-bottom: 20px;">📍 اختر الفرع الأقرب لك</h3>
+            <div id="branchesContainer"></div>
+        </div>
+
+        <!-- الخطوة 3: المنيو -->
+        <div id="step-menu" class="step">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;">🍔 قائمة الطعام</h3>
+                <button onclick="goBackToBranches()" style="background:none; border:none; color:var(--primary-dark); font-family:'Cairo'; font-weight:bold; cursor:pointer;">تغيير الفرع</button>
+            </div>
+            <div id="menuContainer"></div>
+        </div>
+
+        <!-- الخطوة 4: تتبع الطلب -->
+        <div id="step-tracking" class="step glass-panel">
+            <div class="track-status">
+                <div class="status-circle" id="statusIcon">🍳</div>
+                <h2 id="orderStatus" style="color: var(--primary-dark); margin-bottom: 5px;">جاري إرسال الطلب...</h2>
+                <p style="color: #666; margin-top: 0;">رقم الطلب: <strong id="orderIdDisplay">#--</strong></p>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 12px; margin-top: 20px;">
+                <h4 style="margin: 0 0 10px 0;">تفاصيل الفاتورة</h4>
+                <div id="receiptDetails" style="font-size: 14px; color: #555; line-height: 1.8;"></div>
+                <hr style="border:0; border-top:1px dashed #ddd; margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold; color: var(--text);">
+                    <span>الإجمالي:</span>
+                    <span id="receiptTotal">0 ريال</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- السلة العائمة -->
+    <div class="floating-cart" id="floatingCart">
+        <div class="cart-total">
+            <span style="font-size: 14px; opacity: 0.8; display: block;">إجمالي السلة</span>
+            <span id="cartTotal">0</span> ريال
+        </div>
+        <button class="checkout-btn" onclick="checkout()" id="checkoutBtn">تنفيذ الطلب</button>
+    </div>
 
     <script>
-        let orderData = { name: '', phone: '', branchId: '', items: [], total: 0 };
+        let userData = { name: '', phone: '' };
+        let orderData = { branchId: '', items: [], total: 0 };
         let cart = {}; 
         let trackingInterval;
 
-        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
 
-        function nextStep(step) {
-            if(step === 2 && (!document.getElementById('cName').value || !document.getElementById('cPhone').value)) {
-                return Toast.fire({ icon: 'error', title: 'يرجى إدخال الاسم ورقم الجوال' });
+        // --- 1. نظام الدخول الذكي ---
+        window.onload = () => {
+            const savedUser = localStorage.getItem('abuMahalUser');
+            if(savedUser) {
+                userData = JSON.parse(savedUser);
+                document.getElementById('headerDesc').innerText = `مرحباً بك مجدداً يا ${userData.name.split(' ')[0]}!`;
+                loadBranches(); // تخطي شاشة الدخول
+            } else {
+                showStep('step-login');
             }
-            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-            document.getElementById('step' + step).classList.add('active');
+        };
+
+        function saveUserAndProceed() {
+            const name = document.getElementById('cName').value.trim();
+            const phone = document.getElementById('cPhone').value.trim();
+            
+            if(!name || !phone) return Toast.fire({ icon: 'error', title: 'يرجى إدخال الاسم ورقم الجوال' });
+            
+            userData = { name, phone };
+            localStorage.setItem('abuMahalUser', JSON.stringify(userData));
+            document.getElementById('headerDesc').innerText = `مرحباً بك يا ${userData.name.split(' ')[0]}!`;
+            loadBranches();
         }
 
+        function showStep(stepId) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // --- 2. الفروع ---
         async function loadBranches() {
             const res = await fetch('/api/branches');
             const branches = await res.json();
-            document.getElementById('branchSelect').innerHTML = branches.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-            nextStep(3);
+            
+            document.getElementById('branchesContainer').innerHTML = branches.map(b => `
+                <div class="branch-card" onclick="selectBranch('${b.id}')">
+                    <div class="branch-icon">🏪</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; font-size: 18px;">${b.name}</h4>
+                        <span style="color: #27ae60; font-size: 14px; font-weight: 600;">مفتوح الآن</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            showStep('step-branches');
         }
 
+        function selectBranch(id) {
+            orderData.branchId = id;
+            loadMenu();
+        }
+
+        function goBackToBranches() {
+            cart = {}; updateCartUI(); // تفريغ السلة عند تغيير الفرع
+            showStep('step-branches');
+        }
+
+        // --- 3. المنيو والسلة ---
         async function loadMenu() {
-            orderData.name = document.getElementById('cName').value;
-            orderData.phone = document.getElementById('cPhone').value;
-            orderData.branchId = document.getElementById('branchSelect').value;
-            
             const res = await fetch('/api/menu');
             const menu = await res.json();
             
-            let html = '';
-            menu.forEach(item => {
-                if(item.available) {
-                    html += `<div class="menu-item">
-                        <div><strong>${item.name}</strong>  
-<span style="color:#777; font-size:14px;">${item.price} ريال</span></div>
-                        <button class="btn" style="width:auto; margin:0; padding:8px 15px; border-radius:20px;" onclick="updateCart(${item.id}, '${item.name}', ${item.price}, 1)">+ إضافة</button>
-                    </div>`;
-                } else {
-                    html += `<div class="menu-item" style="opacity: 0.6;">
-                        <div><strong>${item.name}</strong>  
-<span style="color:#777; font-size:14px;">${item.price} ريال</span></div>
-                        <span style="color:#e74c3c; font-weight:bold; font-size:14px;">نفدت الكمية</span>
-                    </div>`;
-                }
-            });
-            document.getElementById('menuContainer').innerHTML = html;
-            nextStep(4);
+            document.getElementById('menuContainer').innerHTML = menu.map(item => {
+                if(!item.available) return ''; // إخفاء غير المتوفر تماماً لجمالية التصميم
+                return `
+                <div class="menu-item">
+                    <div class="menu-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.price} ريال</p>
+                    </div>
+                    <div id="item-action-${item.id}">
+                        <button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">+ إضافة</button>
+                    </div>
+                </div>`;
+            }).join('');
+            
+            showStep('step-menu');
         }
 
-        function updateCart(id, name, price, change) {
+        function addToCart(id, name, price) {
             if(!cart[id]) cart[id] = { name, price, qty: 0 };
+            cart[id].qty += 1;
+            renderItemAction(id);
+            updateCartUI();
+            Toast.fire({ icon: 'success', title: 'تمت الإضافة للسلة' });
+        }
+
+        function changeQty(id, change) {
             cart[id].qty += change;
             if(cart[id].qty <= 0) delete cart[id];
-            
-            if(change > 0) Toast.fire({ icon: 'success', title: 'تمت الإضافة للسلة' });
-            renderCart();
+            renderItemAction(id);
+            updateCartUI();
         }
 
-        function renderCart() {
-            let html = '';
+        function renderItemAction(id) {
+            const container = document.getElementById(`item-action-${id}`);
+            if(!container) return;
+            
+            if(cart[id] && cart[id].qty > 0) {
+                container.innerHTML = `
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="changeQty('${id}', 1)">+</button>
+                    <span style="font-weight:bold; width:20px; text-align:center;">${cart[id].qty}</span>
+                    <button class="qty-btn" onclick="changeQty('${id}', -1)">-</button>
+                </div>`;
+            } else {
+                // إعادة زر الإضافة
+                const name = document.querySelector(`#item-action-${id}`).parentElement.querySelector('h4').innerText;
+                const price = parseInt(document.querySelector(`#item-action-${id}`).parentElement.querySelector('p').innerText);
+                container.innerHTML = `<button class="add-btn" onclick="addToCart('${id}', '${name}', ${price})">+ إضافة</button>`;
+            }
+        }
+
+        function updateCartUI() {
             let total = 0;
             orderData.items = [];
             
             for(let id in cart) {
-                let item = cart[id];
-                let itemTotal = item.price * item.qty;
-                total += itemTotal;
-                orderData.items.push({ id, name: item.name, price: item.price, qty: item.qty });
-                
-                html += `<div class="cart-item">
-                    <span>${item.name} (x${item.qty})</span>
-                    <div>
-                        <span style="margin-left:10px; font-weight:bold;">${itemTotal} ريال</span>
-                        <button class="qty-btn" onclick="updateCart(${id}, '${item.name}', ${item.price}, 1)">+</button>
-                        <button class="qty-btn" onclick="updateCart(${id}, '${item.name}', ${item.price}, -1)">-</button>
-                    </div>
-                </div>`;
+                total += cart[id].price * cart[id].qty;
+                orderData.items.push({ id, name: cart[id].name, price: cart[id].price, qty: cart[id].qty });
             }
             
-            document.getElementById('cartItemsContainer').innerHTML = html || '<p style="text-align:center; color:#999; font-size:14px;">السلة فارغة</p>';
-            document.getElementById('cartTotal').innerText = total;
             orderData.total = total;
-            document.getElementById('checkoutBtn').disabled = total === 0;
+            document.getElementById('cartTotal').innerText = total;
+            
+            const cartEl = document.getElementById('floatingCart');
+            if(total > 0) cartEl.classList.add('show');
+            else cartEl.classList.remove('show');
         }
 
+        // --- 4. إرسال الطلب والتتبع ---
         async function checkout() {
             document.getElementById('checkoutBtn').disabled = true;
-            document.getElementById('checkoutBtn').innerText = 'جاري المعالجة...';
+            document.getElementById('checkoutBtn').innerText = 'جاري الإرسال...';
+            
+            const finalOrder = { ...userData, ...orderData };
             
             const res = await fetch('/api/orders', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData)
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(finalOrder)
             });
             const data = await res.json();
+            
             if(data.success) {
-                nextStep(5);
+                document.getElementById('floatingCart').classList.remove('show');
+                document.getElementById('orderIdDisplay').innerText = `#${data.orderId}`;
+                
+                // رسم الفاتورة
+                document.getElementById('receiptDetails').innerHTML = orderData.items.map(i => 
+                    `<div style="display:flex; justify-content:space-between;"><span>${i.qty}x ${i.name}</span><span>${i.price * i.qty} ريال</span></div>`
+                ).join('');
+                document.getElementById('receiptTotal').innerText = `${orderData.total} ريال`;
+                
+                showStep('step-tracking');
+                cart = {}; // تفريغ السلة
                 trackingInterval = setInterval(() => trackOrder(data.orderId), 3000);
             }
         }
@@ -176,18 +315,25 @@
         async function trackOrder(orderId) {
             const res = await fetch('/api/orders/track/' + orderId);
             const order = await res.json();
+            
             const statusEl = document.getElementById('orderStatus');
+            const iconEl = document.getElementById('statusIcon');
             
             if(statusEl.innerText !== order.status) {
                 statusEl.innerText = order.status;
-                statusEl.style.animation = 'none';
-                setTimeout(() => statusEl.style.animation = 'fadeIn 0.5s', 10);
-            }
-            
-            if(order.status === 'استلم الطلب') {
-                clearInterval(trackingInterval);
-                document.querySelector('.loader').style.display = 'none';
-                Swal.fire('بالعافية!', 'تم استلام طلبك بنجاح، نتمنى لك وجبة شهية.', 'success');
+                
+                // تغيير الأيقونة حسب الحالة
+                if(order.status === 'استلام الطلب') iconEl.innerText = '📝';
+                if(order.status === 'قيد التجهيز') iconEl.innerText = '👨‍🍳';
+                if(order.status === 'الطلب جاهز') iconEl.innerText = '🛍️';
+                if(order.status === 'استلم الطلب') {
+                    iconEl.innerText = '✅';
+                    iconEl.style.animation = 'none';
+                    iconEl.style.background = '#4caf50';
+                    iconEl.style.color = 'white';
+                    clearInterval(trackingInterval);
+                    Swal.fire('بالعافية!', 'تم تسليم طلبك بنجاح، نتمنى لك وجبة شهية.', 'success');
+                }
             }
         }
     </script>
