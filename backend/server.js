@@ -20,7 +20,8 @@ const schemaOptions = { toJSON: { virtuals: true, transform: function(doc, ret) 
 
 const User = mongoose.model('User', new mongoose.Schema({ name: String, username: String, password: String, role: String, branchId: String }, schemaOptions));
 const Branch = mongoose.model('Branch', new mongoose.Schema({ name: String, location: String, details: String }, schemaOptions));
-const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, price: Number, available: { type: Boolean, default: true } }, schemaOptions));
+const Category = mongoose.model('Category', new mongoose.Schema({ name: String }, schemaOptions));
+const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, price: Number, categoryId: String, available: { type: Boolean, default: true } }, schemaOptions));
 const Order = mongoose.model('Order', new mongoose.Schema({ name: String, phone: String, branchId: String, items: Array, total: Number, status: String, time: String, timestamps: Object }, schemaOptions));
 
 async function initAdmin() { try { if (!(await User.findOne({ username: 'admin' }))) await User.create({ name: 'المدير العام', username: 'admin', password: '123', role: 'admin' }); } catch(e) {} }
@@ -33,6 +34,10 @@ app.delete('/api/users/:id', async (req, res) => { try { await User.findByIdAndD
 app.get('/api/branches', async (req, res) => { try { res.json(await Branch.find()); } catch(e) { res.json([]); } });
 app.post('/api/branches', async (req, res) => { try { await Branch.create(req.body); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
 app.delete('/api/branches/:id', async (req, res) => { try { await Branch.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
+
+app.get('/api/categories', async (req, res) => { try { res.json(await Category.find()); } catch(e) { res.json([]); } });
+app.post('/api/categories', async (req, res) => { try { await Category.create(req.body); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
+app.delete('/api/categories/:id', async (req, res) => { try { await Category.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
 
 app.get('/api/menu', async (req, res) => { try { res.json(await Menu.find()); } catch(e) { res.json([]); } });
 app.post('/api/menu', async (req, res) => { try { await Menu.create(req.body); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });

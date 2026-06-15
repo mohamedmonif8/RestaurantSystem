@@ -1,6 +1,50 @@
 [
     {
-        "merged": "com.restaurant.abumahal.app-merged_res-20:/layout_activity_main.xml.flat",
-        "source": "com.restaurant.abumahal.app-main-22:/layout/activity_main.xml"
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\drawable_app_logo.jpg.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\drawable\\app_logo.jpg"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-merged_res-20:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\مم\\.gradle\\daemon\\8.4\\com.restaurant.abumahal.app-main-22:\\mipmap-hdpi\\ic_launcher.png"
     }
 ]
