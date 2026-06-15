@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق العميل</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #333; text-align: center; }
+        .btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: #ff5722; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .step { display: none; }
+        .active { display: block; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .menu-item { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🍔 مطعمنا</h2>
+        
+        <!-- الخطوة 1: البيانات -->
+        <div id="step1" class="step active">
+            <h3>1. تسجيل البيانات</h3>
+            <input type="text" id="customerName" placeholder="الاسم الكريم" required>
+            <input type="tel" id="customerPhone" placeholder="رقم الجوال" required>
+            <button class="btn" onclick="nextStep(2)">التالي</button>
+        </div>
+
+        <!-- الخطوة 2: نوع الخدمة -->
+        <div id="step2" class="step">
+            <h3>2. اختر نوع الخدمة</h3>
+            <button class="btn" onclick="nextStep(3)">استلام من الفرع</button>
+            <button class="btn" disabled>توصيل (قريباً)</button>
+        </div>
+
+        <!-- الخطوة 3: اختيار الفرع -->
+        <div id="step3" class="step">
+            <h3>3. اختر الفرع الأقرب لك</h3>
+            <select id="branchSelect">
+                <option value="1">الفرع الرئيسي</option>
+                <option value="2">فرع الشمال</option>
+            </select>
+            <button class="btn" onclick="loadMenu()">التالي</button>
+        </div>
+
+        <!-- الخطوة 4: المنيو والدفع -->
+        <div id="step4" class="step">
+            <h3>4. قائمة الطعام</h3>
+            <div id="menuContainer"></div>
+        </div>
+
+        <!-- الخطوة 5: التتبع -->
+        <div id="step5" class="step">
+            <h3>5. تتبع الطلب</h3>
+            <div style="text-align: center; padding: 20px; background: #e8f5e9; border-radius: 5px;">
+                <h4 style="color: #2e7d32;">تم الدفع بنجاح!</h4>
+                <p>حالة الطلب الآن:</p>
+                <h2 id="orderStatus" style="color: #ff5722;">استلام الطلب</h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orderData = { name: '', phone: '', branchId: 1, items: [], total: 0 };
+
+        function nextStep(step) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+
+        async function loadMenu() {
+            orderData.name = document.getElementById('customerName').value;
+            orderData.phone = document.getElementById('customerPhone').value;
+            orderData.branchId = document.getElementById('branchSelect').value;
+            
+            const res = await fetch('/api/menu');
+            const menu = await res.json();
+            
+            let html = '';
+            menu.forEach(item => {
+                html += <div class="menu-item">
+                            <span>\ - \ ريال</span>
+                            <button class="btn" style="width: auto; margin: 0;" onclick="placeOrder(\, '\', \)">اطلب وادفع</button>
+                         </div>;
+            });
+            document.getElementById('menuContainer').innerHTML = html;
+            nextStep(4);
+        }
+
+        async function placeOrder(itemId, itemName, price) {
+            orderData.items = [{ id: itemId, name: itemName }];
+            orderData.total = price;
+
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+            const data = await res.json();
+            if(data.success) {
+                nextStep(5);
+            }
+        }
+    </script>
+</body>
+</html>
