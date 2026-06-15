@@ -198,7 +198,7 @@
             const res = await fetch('/api/branches'); const b = await res.json();
             document.getElementById('branchesContainer').innerHTML = b.map(x => `
                 <div class="card glass" onclick="selectBranch('${x.id}')" style="cursor:pointer;">
-                    <div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('')"><div style="font-size:30px;">🏪</div>
+                    <div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('')"><div style="display:flex; align-items:center; gap:15px; width:100%; cursor:pointer;" onclick="selectBranch('')"><div style="font-size:30px;">🏪</div>
                     <div style="flex-grow:1;"><h4 style="margin:0 0 5px 0;"></h4><span style="color:#aaa;font-size:12px;"></span></div><span style="color:var(--primary);font-size:12px; font-weight:bold;">مفتوح الآن</span></div>
                 </div>`).join('');
             showBranches();
@@ -342,4 +342,5 @@
     </script>
 </body>
 </html>
+
 

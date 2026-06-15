@@ -19,7 +19,6 @@ mongoose.connect(dbURI).then(() => { console.log('✅ DB Connected!'); initAdmin
 const schemaOptions = { toJSON: { virtuals: true, transform: function(doc, ret) { ret.id = ret._id; delete ret._id; delete ret.__v; } } };
 
 const User = mongoose.model('User', new mongoose.Schema({ name: String, username: String, password: String, role: String, branchId: String }, schemaOptions));
-// تحديث جدول الفروع ليقبل الموقع والتفاصيل
 const Branch = mongoose.model('Branch', new mongoose.Schema({ name: String, location: String, details: String }, schemaOptions));
 const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, price: Number, available: { type: Boolean, default: true } }, schemaOptions));
 const Order = mongoose.model('Order', new mongoose.Schema({ name: String, phone: String, branchId: String, items: Array, total: Number, status: String, time: String, timestamps: Object }, schemaOptions));
