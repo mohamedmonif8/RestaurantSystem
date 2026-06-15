@@ -75,7 +75,7 @@
 
     <script>
         let orderData = { name: '', phone: '', branchId: '', items: [], total: 0 };
-        let cart = {}; // { id: {name, price, qty} }
+        let cart = {}; 
         let trackingInterval;
 
         const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
@@ -91,7 +91,7 @@
         async function loadBranches() {
             const res = await fetch('/api/branches');
             const branches = await res.json();
-            document.getElementById('branchSelect').innerHTML = branches.map(b => <option value="\">\</option>).join('');
+            document.getElementById('branchSelect').innerHTML = branches.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
             nextStep(3);
         }
 
@@ -106,17 +106,17 @@
             let html = '';
             menu.forEach(item => {
                 if(item.available) {
-                    html += <div class="menu-item">
-                        <div><strong>\</strong>  
-<span style="color:#777; font-size:14px;">\ ريال</span></div>
-                        <button class="btn" style="width:auto; margin:0; padding:8px 15px; border-radius:20px;" onclick="updateCart(\, '\', \, 1)">+ إضافة</button>
-                    </div>;
+                    html += `<div class="menu-item">
+                        <div><strong>${item.name}</strong>  
+<span style="color:#777; font-size:14px;">${item.price} ريال</span></div>
+                        <button class="btn" style="width:auto; margin:0; padding:8px 15px; border-radius:20px;" onclick="updateCart(${item.id}, '${item.name}', ${item.price}, 1)">+ إضافة</button>
+                    </div>`;
                 } else {
-                    html += <div class="menu-item" style="opacity: 0.6;">
-                        <div><strong>\</strong>  
-<span style="color:#777; font-size:14px;">\ ريال</span></div>
+                    html += `<div class="menu-item" style="opacity: 0.6;">
+                        <div><strong>${item.name}</strong>  
+<span style="color:#777; font-size:14px;">${item.price} ريال</span></div>
                         <span style="color:#e74c3c; font-weight:bold; font-size:14px;">نفدت الكمية</span>
-                    </div>;
+                    </div>`;
                 }
             });
             document.getElementById('menuContainer').innerHTML = html;
@@ -143,14 +143,14 @@
                 total += itemTotal;
                 orderData.items.push({ id, name: item.name, price: item.price, qty: item.qty });
                 
-                html += <div class="cart-item">
-                    <span>\ (x\)</span>
+                html += `<div class="cart-item">
+                    <span>${item.name} (x${item.qty})</span>
                     <div>
-                        <span style="margin-left:10px; font-weight:bold;">\ ريال</span>
-                        <button class="qty-btn" onclick="updateCart(\, '\', \, 1)">+</button>
-                        <button class="qty-btn" onclick="updateCart(\, '\', \, -1)">-</button>
+                        <span style="margin-left:10px; font-weight:bold;">${itemTotal} ريال</span>
+                        <button class="qty-btn" onclick="updateCart(${id}, '${item.name}', ${item.price}, 1)">+</button>
+                        <button class="qty-btn" onclick="updateCart(${id}, '${item.name}', ${item.price}, -1)">-</button>
                     </div>
-                </div>;
+                </div>`;
             }
             
             document.getElementById('cartItemsContainer').innerHTML = html || '<p style="text-align:center; color:#999; font-size:14px;">السلة فارغة</p>';
