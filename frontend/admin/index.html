@@ -5,29 +5,11 @@
     <title>لوحة الإدارة | أبو مهل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- إضافة مكتبة الرسم البياني -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* الثيم الأساسي والخلفية */
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            margin: 0; padding: 0; color: #fff;
-            background: #0a0a0a;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(229, 9, 20, 0.15 ), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(229, 9, 20, 0.15), transparent 25%);
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        
-        /* التأثير الزجاجي السحري */
-        .glass {
-            background: rgba(30, 30, 30, 0.4);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        /* شاشة الدخول */
+        body { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; color: #fff; background: #0a0a0a; background-image: radial-gradient(circle at 15% 50%, rgba(229, 9, 20, 0.15 ), transparent 25%), radial-gradient(circle at 85% 30%, rgba(229, 9, 20, 0.15), transparent 25%); background-attachment: fixed; min-height: 100vh; }
+        .glass { background: rgba(30, 30, 30, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #E50914; transition: transform 0.3s; }
         .login-box:hover { transform: translateY(-5px); }
@@ -35,8 +17,6 @@
         .login-box input:focus { border-color: #E50914; background: rgba(0,0,0,0.8); box-shadow: 0 0 15px rgba(229,9,20,0.2); }
         .login-box button { width: 100%; padding: 15px; background: #E50914; color: white; border: none; border-radius: 12px; font-family: 'Cairo'; font-weight: 900; cursor: pointer; font-size: 18px; transition: 0.3s; }
         .login-box button:hover { background: #b20710; transform: scale(1.02); }
-
-        /* لوحة الإدارة */
         #mainApp { display: none; }
         .sidebar { width: 250px; position: fixed; height: 100vh; padding-top: 20px; border-left: 1px solid rgba(255,255,255,0.05); z-index: 100; }
         .sidebar h2 { text-align: center; color: #E50914; margin-bottom: 30px; font-weight: 900; text-shadow: 0 0 10px rgba(229,9,20,0.3); }
@@ -45,45 +25,36 @@
         .sidebar button.active { background: rgba(229,9,20,0.1); color: white; border-right: 4px solid #E50914; }
         .sidebar .logout { margin-top: 50px; color: #ff4757; }
         .sidebar .logout:hover { background: rgba(255,71,87,0.1); }
-        
         .content { margin-right: 250px; padding: 30px; }
         .section { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); } .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* البطاقات */
         .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .card { padding: 25px; border-radius: 20px; text-align: center; border-bottom: 4px solid #E50914; transition: all 0.3s ease; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(229,9,20,0.15); }
         .card h3 { margin: 0; color: #aaa; font-size: 16px; }
         .card p { margin: 10px 0 0; font-size: 35px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        
-        /* الجداول */
         table { width: 100%; border-radius: 15px; overflow: hidden; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 18px 15px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
         th { background: rgba(0,0,0,0.4); color: #E50914; font-weight: 900; }
         tr { transition: 0.3s; }
         tr:hover { background: rgba(255,255,255,0.03); }
-        
-        /* الأزرار */
         .btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; color: white; transition: 0.3s; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-add { background: linear-gradient(45deg, #27ae60, #2ecc71); margin-bottom: 15px; }
         .btn-del { background: linear-gradient(45deg, #c0392b, #e74c3c); }
         .btn-view { background: linear-gradient(45deg, #2980b9, #3498db); }
-        
-        /* تخصيص النوافذ المنبثقة (SweetAlert) لتكون زجاجية */
         .swal2-popup { background: rgba(20, 20, 20, 0.85) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 24px !important; color: #fff !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important; }
         .swal2-title, .swal2-html-container { color: #fff !important; }
         .swal2-input, .swal2-select { background: rgba(0,0,0,0.5) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 12px !important; }
         .swal2-input:focus { border-color: #E50914 !important; box-shadow: 0 0 10px rgba(229,9,20,0.2) !important; }
-        .swal2-close { color: #fff !important; }
-        .swal2-close:hover { color: #E50914 !important; }
-
-        /* تصميم التايم لاين داخل النافذة الزجاجية */
+        .swal2-close { color: #fff !important; } .swal2-close:hover { color: #E50914 !important; }
         .timeline { text-align: right; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; border-right: 4px solid #E50914; }
         .timeline-item { margin-bottom: 10px; font-size: 15px; }
         .timeline-item span { font-weight: bold; color: #ccc; display: inline-block; width: 120px; }
         .timeline-item .time { color: #E50914; font-weight: bold; text-shadow: 0 0 5px rgba(229,9,20,0.3); }
+        
+        /* حاوية الرسم البياني */
+        .chart-container { position: relative; height: 350px; width: 100%; padding: 20px; box-sizing: border-box; margin-top: 20px; border-radius: 20px; border-bottom: 4px solid #E50914; }
     </style>
 </head>
 <body>
@@ -116,6 +87,10 @@
                     <div class="card glass"><h3>عدد الفروع</h3><p id="sum-branches">0</p></div>
                     <div class="card glass"><h3>المستخدمين</h3><p id="sum-users">0</p></div>
                 </div>
+                <!-- الرسم البياني -->
+                <div class="chart-container glass">
+                    <canvas id="salesChart"></canvas>
+                </div>
             </div>
 
             <div id="sec-orders" class="section">
@@ -147,9 +122,9 @@
     </div>
 
     <script>
-        // --- الأكواد البرمجية لم تتغير أبداً (نفس المنطق 100%) ---
         let branchesList = [];
         let allOrdersList = [];
+        let myChart = null; // متغير الرسم البياني
 
         function checkAuth() {
             const user = JSON.parse(localStorage.getItem('adminUser'));
@@ -203,6 +178,46 @@
             document.getElementById('menuTable').innerHTML = menu.map(m => `<tr><td>${m.name}</td><td>${m.price} ريال</td><td><button class="btn btn-del" onclick="del('/api/menu/${m.id}')">حذف</button></td></tr>`).join('');
             const resU = await fetch('/api/users'); const users = await resU.json();
             document.getElementById('usersTable').innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.username}</td><td>${u.role==='admin'?'مدير عام':'موظف فرع'}</td><td><button class="btn btn-del" onclick="del('/api/users/${u.id}')">حذف</button></td></tr>`).join('');
+            
+            updateChart(); // تحديث الرسم البياني
+        }
+
+        // 📊 دالة رسم المبيعات
+        function updateChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            if(myChart) myChart.destroy(); // مسح الرسم القديم لمنع التداخل
+
+            // حساب المبيعات لكل فرع
+            const branchSales = {};
+            branchesList.forEach(b => branchSales[b.id] = { name: b.name, total: 0 });
+            allOrdersList.forEach(o => { if(branchSales[o.branchId]) branchSales[o.branchId].total += o.total; });
+
+            const labels = Object.values(branchSales).map(b => b.name);
+            const data = Object.values(branchSales).map(b => b.total);
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'المبيعات (ريال)',
+                        data: data,
+                        backgroundColor: 'rgba(229, 9, 20, 0.7)',
+                        borderColor: '#E50914',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        hoverBackgroundColor: 'rgba(229, 9, 20, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#fff', font: { family: 'Cairo', size: 14 } } } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#aaa', font: { family: 'Cairo' } } },
+                        x: { grid: { display: false }, ticks: { color: '#aaa', font: { family: 'Cairo', size: 14 } } }
+                    }
+                }
+            });
         }
 
         function viewOrder(orderId) {
