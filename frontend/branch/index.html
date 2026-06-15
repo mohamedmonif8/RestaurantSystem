@@ -2,14 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>شاشة الفرع</title>
+    <title>شاشة الفرع الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #1e1e2f; color: #fff; padding: 20px; margin: 0; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #2a2a40; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3 ); }
+        body { font-family: 'Cairo', sans-serif; background: #1e1e2f; color: #fff; padding: 0; margin: 0; }
+        
+        /* شاشة تسجيل الدخول */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e1e2f; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: #2a2a40; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5 ); width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #ff9800; }
+        .login-box h2 { color: #ff9800; margin-top: 0; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #3f3f5a; border-radius: 8px; box-sizing: border-box; font-family: 'Cairo'; background: #1e1e2f; color: white; outline: none; }
+        .login-box input:focus { border-color: #ff9800; }
+        .login-box button { width: 100%; padding: 12px; background: #ff9800; color: white; border: none; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        
+        /* التطبيق الرئيسي */
+        #mainApp { display: none; flex-direction: column; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #2a2a40; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-wrap: wrap; gap: 15px; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
         h2 { margin: 0; color: #ff9800; }
-        select { padding: 10px 15px; font-family: 'Cairo'; font-size: 16px; border-radius: 8px; border: none; background: #3f3f5a; color: white; outline: none; }
+        select { padding: 10px 15px; font-family: 'Cairo'; font-size: 16px; border-radius: 8px; border: none; background: #3f3f5a; color: white; outline: none; font-weight: bold; }
+        select:disabled { opacity: 0.6; cursor: not-allowed; background: #1e1e2f; border: 1px solid #ff9800; }
+        .logout-btn { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; }
+        
         .tabs { margin-top: 20px; display: flex; gap: 10px; }
         .tabs button { padding: 12px 25px; background: #2a2a40; color: #aaa; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cairo'; font-weight: 600; font-size: 16px; transition: 0.3s; }
         .tabs button.active { background: #ff5722; color: white; }
@@ -21,38 +36,103 @@
         .order-actions { display: flex; gap: 10px; margin-top: 15px; }
         
         .menu-card { background: #2a2a40; padding: 15px 20px; margin-top: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        
         .btn { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.2s; }
-        .btn:hover { filter: brightness(1.1); }
-        .btn-prep { background: #ff9800; color: white; } 
-        .btn-ready { background: #4caf50; color: white; } 
-        .btn-done { background: #2196f3; color: white; }
+        .btn-prep { background: #ff9800; color: white; } .btn-ready { background: #4caf50; color: white; } .btn-done { background: #2196f3; color: white; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>👨‍🍳 شاشة المطبخ والفرع</h2>
-        <select id="branchSelect" onchange="forceLoadData()"></select>
-    </div>
-    <div class="tabs">
-        <button id="tab-orders" class="active" onclick="switchTab('orders')">الطلبات الحالية</button>
-        <button id="tab-menu" onclick="switchTab('menu')">إدارة توفر الأصناف</button>
+    <!-- شاشة الدخول -->
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2>👨‍🍳 دخول الموظفين</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">الرجاء إدخال بياناتك للوصول لشاشة الفرع</p>
+            <input type="text" id="loginUser" placeholder="اسم المستخدم">
+            <input type="password" id="loginPass" placeholder="كلمة المرور">
+            <button onclick="login()">تسجيل الدخول</button>
+        </div>
     </div>
 
-    <div id="ordersSection"></div>
-    <div id="menuSection" style="display:none;"></div>
+    <!-- التطبيق الرئيسي -->
+    <div id="mainApp">
+        <div class="header">
+            <div class="header-right">
+                <h2>👨‍🍳 شاشة المطبخ</h2>
+                <span style="color: #aaa; margin-right: 15px;">الموظف: <strong id="userNameDisplay" style="color:white;"></strong></span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <select id="branchSelect" onchange="forceLoadData()"></select>
+                <button class="logout-btn" onclick="logout()">خروج</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button id="tab-orders" class="active" onclick="switchTab('orders')">الطلبات الحالية</button>
+            <button id="tab-menu" onclick="switchTab('menu')">إدارة توفر الأصناف</button>
+        </div>
+
+        <div id="ordersSection"></div>
+        <div id="menuSection" style="display:none;"></div>
+    </div>
 
     <script>
+        let currentUser = null;
         let lastOrdersString = "";
         let lastMenuString = "";
         let lastOrderCount = 0;
+        let dataInterval;
 
-        async function init() {
+        // --- نظام الدخول ---
+        function checkAuth() {
+            currentUser = JSON.parse(localStorage.getItem('branchUser'));
+            if(currentUser && (currentUser.role === 'branch' || currentUser.role === 'admin')) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'flex';
+                document.getElementById('userNameDisplay').innerText = currentUser.name;
+                initApp();
+            } else {
+                document.getElementById('loginOverlay').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username, password}) });
+            const data = await res.json();
+            
+            if(data.success && (data.user.role === 'branch' || data.user.role === 'admin')) {
+                localStorage.setItem('branchUser', JSON.stringify(data.user));
+                checkAuth();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم تسجيل الدخول', showConfirmButton: false, timer: 2000 });
+            } else {
+                Swal.fire('خطأ', data.message || 'ليس لديك صلاحية دخول لشاشة الفرع', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('branchUser');
+            clearInterval(dataInterval);
+            checkAuth();
+        }
+
+        // --- تهيئة التطبيق والقفل الذكي ---
+        async function initApp() {
             const res = await fetch('/api/branches');
             const branches = await res.json();
-            document.getElementById('branchSelect').innerHTML = branches.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+            const select = document.getElementById('branchSelect');
+            select.innerHTML = branches.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+            
+            // 🔒 القفل الذكي: إذا كان المستخدم مدير فرع، نثبت اختياره ونقفل القائمة
+            if(currentUser.role === 'branch') {
+                select.value = currentUser.branchId;
+                select.disabled = true;
+            } else {
+                select.disabled = false; // المدير العام يمكنه اختيار أي فرع
+            }
+            
             forceLoadData();
-            setInterval(loadDataSilently, 3000);
+            dataInterval = setInterval(loadDataSilently, 3000);
         }
 
         function switchTab(tab) {
@@ -140,7 +220,7 @@
             forceLoadData();
         }
 
-        init();
+        checkAuth();
     </script>
 </body>
 </html>
