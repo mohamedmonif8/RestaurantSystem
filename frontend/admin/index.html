@@ -62,7 +62,7 @@
             <button class="tab-btn" onclick="showSection('categories')">📁 الأقسام</button>
             <button class="tab-btn" onclick="showSection('menu')">🍔 المنيو</button>
             <button class="tab-btn" onclick="showSection('users')">👥 المستخدمين</button>
-            <button class="logout" onclick="logout()">🚪 تسجيل خروج</button>
+            <button class="tab-btn" onclick="showSection('customers')">🧑‍🤝‍🧑 العملاء</button><button class="logout" onclick="logout()">🚪 تسجيل خروج</button>
         </div>
         
         <div class="content">
@@ -135,7 +135,7 @@
             document.getElementById('menuTable').innerHTML = menu.map(m => { const cName = categoriesList.find(c => c.id === m.categoryId)?.name || 'بدون قسم'; return `<tr><td>${m.name}</td><td>${cName}</td><td>${m.price} ريال</td><td><button class="btn btn-del" onclick="del('/api/menu/${m.id}')">حذف</button></td></tr>`; }).join('');
             
             const resU = await fetch('/api/users'); const users = await resU.json(); document.getElementById('usersTable').innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.username}</td><td>${u.role==='admin'?'مدير عام':'موظف فرع'}</td><td><button class="btn btn-del" onclick="del('/api/users/${u.id}')">حذف</button></td></tr>`).join('');
-            updateChart();
+            const resCust = await fetch('/api/admin/customers'); const customersList = await resCust.json(); document.getElementById('customersTable').innerHTML = customersList.map(c => '<tr><td>' + c.name + '</td><td dir="ltr">' + c.phone + '</td><td>' + c.count + '</td><td>' + c.total + ' ريال</td></tr>').join(''); updateChart();
         }
 
         function updateChart() {
@@ -166,3 +166,4 @@
     </script>
 </body>
 </html>
+

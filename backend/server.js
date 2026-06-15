@@ -52,4 +52,6 @@ app.put('/api/orders/:orderId/status', async (req, res) => { try { const order =
 app.get('/api/admin/summary', async (req, res) => { try { const orders = await Order.find(); res.json({ totalOrders: orders.length, totalRevenue: orders.reduce((sum, o) => sum + o.total, 0), branchesCount: await Branch.countDocuments(), usersCount: await User.countDocuments() }); } catch(e) { res.json({ totalOrders: 0, totalRevenue: 0, branchesCount: 0, usersCount: 0 }); } });
 app.get('/api/admin/orders', async (req, res) => { try { res.json(await Order.find().sort({_id: -1})); } catch(e) { res.json([]); } });
 
+app.get('/api/admin/customers', async (req, res) => { try { const orders = await Order.find(); const cMap = {}; orders.forEach(o => { if(!cMap[o.phone]) cMap[o.phone] = { name: o.name, phone: o.phone, count: 0, total: 0 }; cMap[o.phone].count++; cMap[o.phone].total += o.total; }); res.json(Object.values(cMap)); } catch(e) { res.json([]); } });
 app.listen(process.env.PORT || 3000, () => console.log('Server running'));
+
