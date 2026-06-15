@@ -8,17 +8,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { var(--primary ): #E50914; var(--primary-dark): #B20710; var(--bg): #0a0a0a; var(--text): #fff; var(--glass-bg): rgba(30, 30, 30, 0.6); var(--glass-border): rgba(255, 255, 255, 0.08); }
-        body { font-family: 'Cairo', sans-serif; background: #0a0a0a; margin: 0; padding: 0; color: #fff; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; background-image: radial-gradient(circle at 50% 0%, rgba(229, 9, 20, 0.15), transparent 50%); background-attachment: fixed; }
+        body { font-family: 'Cairo', sans-serif; background: #0a0a0a; margin: 0; padding: 0; color: #fff; padding-bottom: 80px; -webkit-tap-highlight-color: transparent;  background-attachment: fixed; }
         .glass { background: rgba(30, 30, 30, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
         .app-header { padding: 30px 20px 20px; text-align: center; position: relative; z-index: 10; border-bottom: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0 0 30px 30px; }
-        .logo-container { width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; border: 3px solid #E50914; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); overflow: hidden; background: #000; }
+        .logo-container { width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; border: 3px solid #E50914;  overflow: hidden; background: #000; }
         .app-logo { width: 100%; height: 100%; object-fit: cover; }
-        .app-header h1 { margin: 0; font-size: 28px; font-weight: 900; text-shadow: 0 2px 10px rgba(229,9,20,0.5); }
+        .app-header h1 { margin: 0; font-size: 28px; font-weight: 900;  }
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
         .page { display: none; animation: fadeIn 0.3s ease-out; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         input { width: 100%; padding: 15px; margin: 10px 0 20px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; font-family: 'Cairo'; font-size: 16px; outline: none; transition: 0.3s; background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; }
-        input:focus { border-color: #E50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.2); }
+        input:focus { border-color: #E50914;  }
         .btn { width: 100%; padding: 15px; background: #E50914; color: #fff; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; font-weight: 900; box-shadow: 0 6px 20px rgba(229, 9, 20, 0.3); transition: 0.2s; }
         .btn:active { transform: scale(0.97); background: #B20710; }
         .card { padding: 20px; border-radius: 16px; margin-bottom: 15px; transition: 0.3s; }
@@ -28,7 +28,7 @@
         .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); }
         .qty-btn { background: transparent; border: none; color: white; font-size: 20px; width: 30px; height: 30px; cursor: pointer; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-around; align-items: center; z-index: 1000; border-top: 1px solid rgba(255, 255, 255, 0.08); border-radius: 25px 25px 0 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #ffffff; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; }
         .nav-item.active { color: #E50914; transform: translateY(-3px); }
         .nav-icon { font-size: 24px; margin-bottom: 3px; }
         .cart-badge { position: absolute; top: -5px; right: -10px; background: #E50914; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; }
@@ -64,7 +64,7 @@
                 <div id="menuView" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <h3 style="margin:0; color:#E50914;">🍔 المنيو</h3>
-                        <button onclick="showBranches( )" style="background:none;border:none;color:#aaa;font-family:'Cairo';cursor:pointer;text-decoration:underline;">تغيير الفرع</button>
+                        <button onclick="showBranches( )" style="background:none;border:none;color:#ffffff;font-family:'Cairo';cursor:pointer;text-decoration:underline;">تغيير الفرع</button>
                     </div>
                     <div id="menuContainer"></div>
                 </div>
@@ -87,11 +87,11 @@
             <div id="page-profile" class="page">
                 <h3 style="color:#E50914; text-align:center;">👤 إعدادات الحساب</h3>
                 <div class="glass" style="padding:20px; border-radius:16px;">
-                    <label style="color:#aaa; font-size:14px;">الاسم</label>
+                    <label style="color:#ffffff; font-size:14px;">الاسم</label>
                     <input type="text" id="pName">
-                    <label style="color:#aaa; font-size:14px;">رقم الجوال</label>
+                    <label style="color:#ffffff; font-size:14px;">رقم الجوال</label>
                     <input type="tel" id="pPhone">
-                    <label style="color:#aaa; font-size:14px;">كلمة المرور الجديدة</label>
+                    <label style="color:#ffffff; font-size:14px;">كلمة المرور الجديدة</label>
                     <input type="password" id="pPass" placeholder="أدخل كلمة مرور جديدة">
                     <button class="btn" onclick="saveProfile()">حفظ التعديلات</button>
                     <button class="btn" style="background:transparent; border:1px solid #E50914; color:#E50914; margin-top:15px;" onclick="logout()">تسجيل خروج</button>
@@ -125,7 +125,7 @@
                         <div style="font-size:30px;">🏪</div>
                         <div style="flex-grow:1;">
                             <h4 style="margin:0 0 5px 0;">${x.name}</h4>
-                            <span style="color:#aaa;font-size:12px;">${x.details || 'فرع معتمد'}</span>
+                            <span style="color:#ffffff;font-size:12px;">${x.details || 'فرع معتمد'}</span>
                         </div>
                         <span style="color:#E50914;font-size:12px; font-weight:bold;">مفتوح الآن</span>
                     </div>
@@ -150,7 +150,7 @@
             if(document.getElementById('page-cart').classList.contains('active')) renderCart();
         }
 
-        function renderCart() { const c = document.getElementById('cartItemsContainer'); if(Object.keys(cart).length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">السلة فارغة 🛒</p>'; return; } c.innerHTML = Object.keys(cart).map(i => `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0;"><div><h4 style="margin:0;">${cart[i].name}</h4><span style="color:#E50914;">${cart[i].price * cart[i].qty} ريال</span></div><div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div></div>`).join(''); }
+        function renderCart() { const c = document.getElementById('cartItemsContainer'); if(Object.keys(cart).length === 0) { c.innerHTML = '<p style="text-align:center; color:#ffffff; margin-top:50px;">السلة فارغة 🛒</p>'; return; } c.innerHTML = Object.keys(cart).map(i => `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0;"><div><h4 style="margin:0;">${cart[i].name}</h4><span style="color:#E50914;">${cart[i].price * cart[i].qty} ريال</span></div><div class="qty-control"><button class="qty-btn" onclick="change('${i}',1)">+</button><b style="width:20px;text-align:center;">${cart[i].qty}</b><button class="qty-btn" onclick="change('${i}',-1)">-</button></div></div>`).join(''); }
 
         async function checkout() {
             if(orderData.items.length === 0) return Swal.fire('تنبيه', 'السلة فارغة', 'warning'); if(!orderData.branchId) return Swal.fire('تنبيه', 'الرجاء اختيار الفرع أولاً', 'warning');
@@ -160,9 +160,10 @@
 يمكنك متابعة حالة الطلب من قسم "طلباتي"`, icon: 'success', background: 'rgba(20,20,20,0.9)', color: '#fff', confirmButtonColor: '#E50914' }).then(() => nav('orders')); }
         }
 
-        function loadMyOrders() { const c = document.getElementById('myOrdersContainer'); if(!userData.orders || userData.orders.length === 0) { c.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:50px;">لا توجد طلبات سابقة 🧾</p>'; return; } c.innerHTML = userData.orders.map(o => `<div class="glass" style="padding:15px; border-radius:16px; margin-bottom:15px; border-right: 4px solid #E50914;"><div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;"><strong>طلب #${o.id}</strong><span style="color:#aaa; font-size:12px;">${o.date} - ${o.time}</span></div><div style="font-size:14px; color:#ddd; margin-bottom:10px;">${o.items.map(i => `<div>${i.qty}x ${i.name}</div>`).join('')}</div><div style="display:flex; justify-content:space-between; align-items:center;"><strong style="color:#E50914;">${o.total} ريال</strong><button class="btn" style="padding:5px 15px; font-size:12px; width:auto;" onclick="trackOrder('${o.id}')">تتبع الحالة</button></div></div>`).join(''); }
+        function loadMyOrders() { const c = document.getElementById('myOrdersContainer'); if(!userData.orders || userData.orders.length === 0) { c.innerHTML = '<p style="text-align:center; color:#ffffff; margin-top:50px;">لا توجد طلبات سابقة 🧾</p>'; return; } c.innerHTML = userData.orders.map(o => `<div class="glass" style="padding:15px; border-radius:16px; margin-bottom:15px; border-right: 4px solid #E50914;"><div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;"><strong>طلب #${o.id}</strong><span style="color:#ffffff; font-size:12px;">${o.date} - ${o.time}</span></div><div style="font-size:14px; color: #ffffff; margin-bottom:10px;">${o.items.map(i => `<div>${i.qty}x ${i.name}</div>`).join('')}</div><div style="display:flex; justify-content:space-between; align-items:center;"><strong style="color:#E50914;">${o.total} ريال</strong><button class="btn" style="padding:5px 15px; font-size:12px; width:auto;" onclick="trackOrder('${o.id}')">تتبع الحالة</button></div></div>`).join(''); }
 
-        async function trackOrder(id) { Swal.fire({title: 'جاري التحديث...', background: 'rgba(20,20,20,0.9)', color: '#fff', didOpen: () => Swal.showLoading()}); const res = await fetch('/api/orders/track/' + id); const o = await res.json(); if(o.error) return Swal.fire('خطأ', 'الطلب غير موجود', 'error'); const orderIndex = userData.orders.findIndex(x => x.id === id); if(orderIndex > -1) { userData.orders[orderIndex].status = o.status; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); } let icon = '🍳'; let color = '#fff'; if(o.status === 'قيد التجهيز') { icon = '👨‍🍳'; color = '#f39c12'; } if(o.status === 'الطلب جاهز') { icon = '🛍️'; color = '#2ecc71'; } if(o.status === 'استلم الطلب') { icon = '✅'; color = '#E50914'; } Swal.fire({ html: `<div style="font-size:50px; margin-bottom:10px;">${icon}</div><h3 style="margin:0; color:${color};">${o.status}</h3><p style="color:#aaa; margin-top:5px;">طلب #${id}</p>`, background: 'rgba(20,20,20,0.9)', color: '#fff', confirmButtonColor: '#E50914', confirmButtonText: 'حسناً' }); }
+        async function trackOrder(id) { Swal.fire({title: 'جاري التحديث...', background: 'rgba(20,20,20,0.9)', color: '#fff', didOpen: () => Swal.showLoading()}); const res = await fetch('/api/orders/track/' + id); const o = await res.json(); if(o.error) return Swal.fire('خطأ', 'الطلب غير موجود', 'error'); const orderIndex = userData.orders.findIndex(x => x.id === id); if(orderIndex > -1) { userData.orders[orderIndex].status = o.status; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); } let icon = '🍳'; let color = '#fff'; if(o.status === 'قيد التجهيز') { icon = '👨‍🍳'; color = '#f39c12'; } if(o.status === 'الطلب جاهز') { icon = '🛍️'; color = '#2ecc71'; } if(o.status === 'استلم الطلب') { icon = '✅'; color = '#E50914'; } Swal.fire({ html: `<div style="font-size:50px; margin-bottom:10px;">${icon}</div><h3 style="margin:0; color:${color};">${o.status}</h3><p style="color:#ffffff; margin-top:5px;">طلب #${id}</p>`, background: 'rgba(20,20,20,0.9)', color: '#fff', confirmButtonColor: '#E50914', confirmButtonText: 'حسناً' }); }
     </script>
 </body>
 </html>
+
