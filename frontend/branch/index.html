@@ -2,63 +2,102 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>شاشة المطبخ / الفرع</title>
+    <title>شاشة الفرع</title>
     <style>
         body { font-family: Arial; background: #333; color: white; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 15px; border-radius: 8px; }
-        select { padding: 10px; font-size: 16px; }
-        .order-card { background: #444; padding: 15px; margin-top: 15px; border-radius: 8px; border-right: 5px solid #ff5722; }
+        .header { display: flex; justify-content: space-between; background: #222; padding: 15px; border-radius: 8px; }
+        .tabs button { padding: 10px 20px; background: #555; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        .tabs button.active { background: #ff5722; }
+        .order-card, .menu-card { background: #444; padding: 15px; margin-top: 15px; border-radius: 8px; border-right: 5px solid #ff5722; }
         .btn { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px; font-weight: bold; }
-        .btn-prep { background: #ff9800; color: white; }
-        .btn-ready { background: #4caf50; color: white; }
-        .btn-done { background: #2196f3; color: white; }
+        .btn-prep { background: #ff9800; color: white; } .btn-ready { background: #4caf50; color: white; } .btn-done { background: #2196f3; color: white; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>👨‍🍳 شاشة المطبخ والطلبات</h2>
-        <select id="branchSelect" onchange="fetchOrders()">
-            <option value="1">الفرع الرئيسي</option>
-            <option value="2">فرع الشمال</option>
-        </select>
+        <h2>👨‍🍳 شاشة الفرع</h2>
+        <select id="branchSelect" onchange="loadData()" style="padding:10px;"></select>
     </div>
-    <div id="ordersContainer"></div>
+    <div class="tabs" style="margin-top:20px;">
+        <button id="tab-orders" class="active" onclick="switchTab('orders')">الطلبات الحالية</button>
+        <button id="tab-menu" onclick="switchTab('menu')">إدارة الكميات (المنيو)</button>
+    </div>
+
+    <div id="ordersSection"></div>
+    <div id="menuSection" style="display:none;"></div>
 
     <script>
+        let lastOrderCount = 0;
+
+        async function init() {
+            const res = await fetch('/api/branches');
+            const branches = await res.json();
+            document.getElementById('branchSelect').innerHTML = branches.map(b => <option value="\">\</option>).join('');
+            loadData();
+            setInterval(fetchOrders, 5000);
+        }
+
+        function switchTab(tab) {
+            document.getElementById('ordersSection').style.display = tab === 'orders' ? 'block' : 'none';
+            document.getElementById('menuSection').style.display = tab === 'menu' ? 'block' : 'none';
+            document.getElementById('tab-orders').classList.toggle('active', tab === 'orders');
+            document.getElementById('tab-menu').classList.toggle('active', tab === 'menu');
+            loadData();
+        }
+
+        function loadData() {
+            if(document.getElementById('ordersSection').style.display !== 'none') fetchOrders();
+            else fetchMenu();
+        }
+
         async function fetchOrders() {
             const branchId = document.getElementById('branchSelect').value;
             const res = await fetch('/api/orders/' + branchId);
             const orders = await res.json();
             
-            let html = '';
-            if(orders.length === 0) html = '<p style="text-align:center; margin-top:50px;">لا توجد طلبات حالياً...</p>';
-            
-            orders.forEach(order => {
-                html += <div class="order-card">
-                    <h3>طلب رقم #\ - \</h3>
-                    <p>الوقت: \ | الحالة الحالية: <strong>\</strong></p>
-                    <p>الطلب: \</p>
-                    <hr style="border-color: #555;">
+            // تنبيه صوتي إذا زاد عدد الطلبات
+            if(orders.length > lastOrderCount && lastOrderCount !== 0) {
+                new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg' ).play().catch(()=>{});
+            }
+            lastOrderCount = orders.length;
+
+            let html = orders.filter(o => o.status !== 'استلم الطلب').map(order => 
+                <div class="order-card">
+                    <h3>طلب #\ - \ (\)</h3>
+                    <p>الحالة: <strong>\</strong></p>
+                    <p>الطلبات: \</p>
                     <button class="btn btn-prep" onclick="updateStatus(\, 'قيد التجهيز')">قيد التجهيز</button>
                     <button class="btn btn-ready" onclick="updateStatus(\, 'الطلب جاهز')">الطلب جاهز</button>
                     <button class="btn btn-done" onclick="updateStatus(\, 'استلم الطلب')">استلم الطلب</button>
-                </div>;
-            });
-            document.getElementById('ordersContainer').innerHTML = html;
+                </div>
+            ).join('');
+            document.getElementById('ordersSection').innerHTML = html || '<p>لا توجد طلبات نشطة...</p>';
         }
 
-        async function updateStatus(orderId, status) {
-            await fetch(/api/orders/\/status, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
-            });
-            fetchOrders(); // تحديث الشاشة
+        async function updateStatus(id, status) {
+            await fetch(/api/orders/\/status, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({status}) });
+            fetchOrders();
         }
 
-        // تحديث تلقائي كل 5 ثواني
-        setInterval(fetchOrders, 5000);
-        fetchOrders();
+        async function fetchMenu() {
+            const res = await fetch('/api/menu');
+            const menu = await res.json();
+            document.getElementById('menuSection').innerHTML = menu.map(item => 
+                <div class="menu-card" style="display:flex; justify-content:space-between;">
+                    <span>\</span>
+                    <button class="btn \" onclick="toggleMenu(\)">
+                        \
+                    </button>
+                </div>
+            ).join('');
+        }
+
+        async function toggleMenu(id) {
+            await fetch(/api/menu/\/toggle, { method: 'PUT' });
+            fetchMenu();
+        }
+
+        init();
     </script>
 </body>
 </html>

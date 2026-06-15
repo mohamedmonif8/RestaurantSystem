@@ -1,70 +1,71 @@
 ﻿const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// تقديم ملفات الواجهات الأمامية
 app.use('/customer', express.static(path.join(__dirname, '../frontend/customer')));
 app.use('/branch', express.static(path.join(__dirname, '../frontend/branch')));
 app.use('/admin', express.static(path.join(__dirname, '../frontend/admin')));
 
-// قاعدة بيانات وهمية مؤقتة
-let orders = [];
-let branches = [{ id: 1, name: 'الفرع الرئيسي' }, { id: 2, name: 'فرع الشمال' }];
-let menu = [
-    { id: 1, name: 'برجر لحم', price: 25, available: true },
-    { id: 2, name: 'بيتزا دجاج', price: 35, available: true }
-];
+// إعداد قاعدة البيانات (ملف JSON)
+const dbFile = path.join(__dirname, 'data.json');
+let db = { orders: [], branches: [{ id: 1, name: 'الفرع الرئيسي' }], menu: [{ id: 1, name: 'برجر لحم', price: 25, available: true }] };
 
-// مسارات الـ API
-app.get('/api/branches', (req, res) => res.json(branches));
-app.get('/api/menu', (req, res) => res.json(menu));
+if (fs.existsSync(dbFile)) {
+    db = JSON.parse(fs.readFileSync(dbFile));
+}
+const saveDb = () => fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
 
-// إنشاء طلب جديد (تطبيق العميل)
+// --- مسارات الفروع ---
+app.get('/api/branches', (req, res) => res.json(db.branches));
+app.post('/api/branches', (req, res) => {
+    const newBranch = { id: Date.now(), name: req.body.name };
+    db.branches.push(newBranch); saveDb(); res.json({ success: true });
+});
+app.delete('/api/branches/:id', (req, res) => {
+    db.branches = db.branches.filter(b => b.id != req.params.id); saveDb(); res.json({ success: true });
+});
+
+// --- مسارات المنيو ---
+app.get('/api/menu', (req, res) => res.json(db.menu));
+app.post('/api/menu', (req, res) => {
+    const newItem = { id: Date.now(), name: req.body.name, price: req.body.price, available: true };
+    db.menu.push(newItem); saveDb(); res.json({ success: true });
+});
+app.delete('/api/menu/:id', (req, res) => {
+    db.menu = db.menu.filter(m => m.id != req.params.id); saveDb(); res.json({ success: true });
+});
+app.put('/api/menu/:id/toggle', (req, res) => {
+    const item = db.menu.find(m => m.id == req.params.id);
+    if(item) { item.available = !item.available; saveDb(); res.json({ success: true }); }
+});
+
+// --- مسارات الطلبات ---
 app.post('/api/orders', (req, res) => {
-    const newOrder = { 
-        id: orders.length + 1, 
-        ...req.body, 
-        status: 'استلام الطلب', 
-        time: new Date().toLocaleTimeString() 
-    };
-    orders.push(newOrder);
-    res.json({ success: true, order: newOrder });
+    const newOrder = { id: Date.now(), ...req.body, status: 'استلام الطلب', time: new Date().toLocaleTimeString() };
+    db.orders.push(newOrder); saveDb(); res.json({ success: true, orderId: newOrder.id });
 });
-
-// جلب طلبات فرع معين (تطبيق الفرع)
 app.get('/api/orders/:branchId', (req, res) => {
-    const branchOrders = orders.filter(o => o.branchId == req.params.branchId);
-    res.json(branchOrders);
+    res.json(db.orders.filter(o => o.branchId == req.params.branchId));
 });
-
-// تحديث حالة الطلب (تطبيق الفرع)
+app.get('/api/orders/track/:orderId', (req, res) => {
+    const order = db.orders.find(o => o.id == req.params.orderId);
+    res.json(order || { error: 'غير موجود' });
+});
 app.put('/api/orders/:orderId/status', (req, res) => {
-    const order = orders.find(o => o.id == req.params.orderId);
-    if(order) {
-        order.status = req.body.status;
-        res.json({ success: true, order });
-    } else {
-        res.status(404).json({ error: 'الطلب غير موجود' });
-    }
+    const order = db.orders.find(o => o.id == req.params.orderId);
+    if(order) { order.status = req.body.status; saveDb(); res.json({ success: true }); }
 });
 
-// جلب ملخص الإدارة (تطبيق الإدارة)
+// --- مسارات الإدارة ---
 app.get('/api/admin/summary', (req, res) => {
-    const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
-    res.json({ totalOrders, totalRevenue, branchesCount: branches.length });
+    const totalRevenue = db.orders.reduce((sum, o) => sum + o.total, 0);
+    res.json({ totalOrders: db.orders.length, totalRevenue, branchesCount: db.branches.length });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log('=================================');
-    console.log('🚀 الخادم يعمل بنجاح على المنفذ ' + PORT);
-    console.log('📱 تطبيق العميل: http://localhost:' + PORT + '/customer' );
-    console.log('🏪 شاشة الفرع:  http://localhost:' + PORT + '/branch' );
-    console.log('⚙️ شاشة الإدارة: http://localhost:' + PORT + '/admin' );
-    console.log('=================================');
-});
+app.listen(PORT, () => console.log('Server running on port ' + PORT));
