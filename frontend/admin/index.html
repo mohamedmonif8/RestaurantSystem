@@ -104,7 +104,7 @@
             <div id="sec-branches" class="section">
                 <h2 style="margin-top:0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">🏪 إدارة الفروع</h2>
                 <button class="btn btn-add" onclick="addBranch()">+ إضافة فرع جديد</button>
-                <table class="glass"><thead><tr><th>اسم الفرع</th><th>إجراء</th></tr></thead><tbody id="branchesTable"></tbody></table>
+                <table class="glass"><thead><tr><th>اسم الفرع</th><th>التفاصيل</th><th>الموقع</th><th>إجراء</th></tr></thead><tbody id="branchesTable"></tbody></table>
             </div>
 
             <div id="sec-menu" class="section">
@@ -248,7 +248,7 @@
             Swal.fire({ html: html, showCloseButton: true, showConfirmButton: false, width: '500px', background: 'transparent' });
         }
 
-        async function addBranch() { const { value: name } = await Swal.fire({ title: 'اسم الفرع', input: 'text', confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent' }); if(name) { await fetch('/api/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name}) }); loadAllData(); } }
+        async function addBranch() { const { value: formValues } = await Swal.fire({title: 'إضافة فرع جديد', html: '<input id="b-name" class="swal2-input" placeholder="اسم الفرع"><input id="b-details" class="swal2-input" placeholder="وصف العنوان (مثال: شارع الملك فهد)"><input id="b-loc" class="swal2-input" placeholder="رابط خرائط جوجل (اختياري)">', focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => ({ name: document.getElementById('b-name').value, details: document.getElementById('b-details').value, location: document.getElementById('b-loc').value }) }); if(formValues && formValues.name) { await fetch('/api/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(formValues) }); loadAllData(); } }
         async function addMenu() { const { value: formValues } = await Swal.fire({ title: 'إضافة صنف', html: '<input id="swal-input1" class="swal2-input" placeholder="اسم الصنف"><input id="swal-input2" type="number" class="swal2-input" placeholder="السعر">', focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value] }); if(formValues && formValues[0] && formValues[1]) { await fetch('/api/menu', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: formValues[0], price: Number(formValues[1])}) }); loadAllData(); } }
         async function addUser() { const branchOptions = branchesList.map(b => `<option value="${b.id}">${b.name}</option>`).join(''); const { value: formValues } = await Swal.fire({ title: 'إضافة مستخدم', html: `<input id="u-name" class="swal2-input" placeholder="الاسم الكامل"><input id="u-user" class="swal2-input" placeholder="اسم المستخدم (للدخول)"><input id="u-pass" class="swal2-input" placeholder="كلمة المرور"><select id="u-role" class="swal2-select" style="width:73%;"><option value="branch">موظف فرع</option><option value="admin">مدير عام</option></select><select id="u-branch" class="swal2-select" style="width:73%;"><option value="">بدون فرع (للمدير)</option>${branchOptions}</select>`, focusConfirm: false, confirmButtonText: 'إضافة', confirmButtonColor: '#E50914', background: 'transparent', preConfirm: () => ({ name: document.getElementById('u-name').value, username: document.getElementById('u-user').value, password: document.getElementById('u-pass').value, role: document.getElementById('u-role').value, branchId: document.getElementById('u-branch').value }) }); if(formValues && formValues.username) { await fetch('/api/users', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(formValues) }); loadAllData(); } }
         async function del(url) { if((await Swal.fire({title:'هل أنت متأكد؟', icon:'warning', showCancelButton:true, confirmButtonText:'نعم، احذف', cancelButtonText:'إلغاء', confirmButtonColor:'#e74c3c', background: 'transparent'})).isConfirmed) { await fetch(url, { method: 'DELETE' }); loadAllData(); } }
@@ -257,3 +257,4 @@
     </script>
 </body>
 </html>
+
