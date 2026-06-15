@@ -2,92 +2,87 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>شاشة الفرع الذكية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>شاشة المطبخ | أبو مهل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #1e1e2f; color: #fff; padding: 0; margin: 0; }
+        body { font-family: 'Cairo', sans-serif; background: #141414; color: #fff; padding: 0; margin: 0; }
         
-        /* شاشة تسجيل الدخول */
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e1e2f; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-box { background: #2a2a40; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5 ); width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #ff9800; }
-        .login-box h2 { color: #ff9800; margin-top: 0; }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #3f3f5a; border-radius: 8px; box-sizing: border-box; font-family: 'Cairo'; background: #1e1e2f; color: white; outline: none; }
-        .login-box input:focus { border-color: #ff9800; }
-        .login-box button { width: 100%; padding: 12px; background: #ff9800; color: white; border: none; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        /* شاشة الدخول */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #141414; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: #1f1f1f; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #E50914; box-shadow: 0 10px 30px rgba(0,0,0,0.5 ); }
+        .login-box input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #333; border-radius: 10px; background: #141414; color: white; font-family: 'Cairo'; outline: none; }
+        .login-box input:focus { border-color: #E50914; }
+        .login-box button { width: 100%; padding: 15px; background: #E50914; color: white; border: none; border-radius: 10px; font-family: 'Cairo'; font-weight: 900; cursor: pointer; font-size: 18px; margin-top: 10px; }
         
         /* التطبيق الرئيسي */
         #mainApp { display: none; flex-direction: column; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #2a2a40; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-wrap: wrap; gap: 15px; }
-        .header-right { display: flex; align-items: center; gap: 15px; }
-        h2 { margin: 0; color: #ff9800; }
-        select { padding: 10px 15px; font-family: 'Cairo'; font-size: 16px; border-radius: 8px; border: none; background: #3f3f5a; color: white; outline: none; font-weight: bold; }
-        select:disabled { opacity: 0.6; cursor: not-allowed; background: #1e1e2f; border: 1px solid #ff9800; }
-        .logout-btn { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #1f1f1f; padding: 15px 25px; border-radius: 15px; border-bottom: 3px solid #E50914; }
+        h2 { margin: 0; color: #fff; }
+        select { padding: 10px; font-family: 'Cairo'; border-radius: 8px; background: #333; color: white; border: none; outline: none; }
+        .logout-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; }
         
         .tabs { margin-top: 20px; display: flex; gap: 10px; }
-        .tabs button { padding: 12px 25px; background: #2a2a40; color: #aaa; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cairo'; font-weight: 600; font-size: 16px; transition: 0.3s; }
-        .tabs button.active { background: #ff5722; color: white; }
+        .tabs button { padding: 12px 25px; background: #1f1f1f; color: #aaa; border: none; cursor: pointer; border-radius: 10px; font-family: 'Cairo'; font-weight: bold; }
+        .tabs button.active { background: #E50914; color: white; }
         
         #ordersSection { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px; }
-        .order-card { background: #2a2a40; padding: 20px; border-radius: 12px; border-right: 6px solid #ff9800; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
-        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #3f3f5a; padding-bottom: 10px; margin-bottom: 10px; }
-        .order-items { flex-grow: 1; font-size: 16px; line-height: 1.6; color: #ddd; }
+        .order-card { background: #1f1f1f; padding: 20px; border-radius: 15px; border-right: 6px solid #E50914; display: flex; flex-direction: column; position: relative; }
+        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
+        .order-items { flex-grow: 1; font-size: 18px; line-height: 1.8; color: #eee; font-weight: bold; }
         .order-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 15px; }
+        .btn-prep { background: #E50914; color: white; } .btn-ready { background: #27ae60; color: white; } .btn-done { background: #2980b9; color: white; }
         
-        .menu-card { background: #2a2a40; padding: 15px 20px; margin-top: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.2s; }
-        .btn-prep { background: #ff9800; color: white; } .btn-ready { background: #4caf50; color: white; } .btn-done { background: #2196f3; color: white; }
+        .print-btn { position: absolute; top: 15px; left: 15px; background: #333; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 12px; }
+        .print-btn:hover { background: #555; }
+
+        /* إعدادات الطباعة الحرارية (Receipt) */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 80mm; padding: 10px; font-family: 'Cairo', sans-serif; color: black; background: white; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
-    <!-- شاشة الدخول -->
     <div id="loginOverlay">
         <div class="login-box">
-            <h2>👨‍🍳 دخول الموظفين</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">الرجاء إدخال بياناتك للوصول لشاشة الفرع</p>
+            <h2 style="color:#E50914;">👨‍🍳 دخول المطبخ</h2>
             <input type="text" id="loginUser" placeholder="اسم المستخدم">
             <input type="password" id="loginPass" placeholder="كلمة المرور">
-            <button onclick="login()">تسجيل الدخول</button>
+            <button onclick="login()">دخول</button>
         </div>
     </div>
 
-    <!-- التطبيق الرئيسي -->
     <div id="mainApp">
         <div class="header">
-            <div class="header-right">
-                <h2>👨‍🍳 شاشة المطبخ</h2>
-                <span style="color: #aaa; margin-right: 15px;">الموظف: <strong id="userNameDisplay" style="color:white;"></strong></span>
-            </div>
-            <div style="display: flex; gap: 15px; align-items: center;">
+            <h2>👨‍🍳 مطبخ أبو مهل</h2>
+            <div style="display: flex; gap: 15px;">
                 <select id="branchSelect" onchange="forceLoadData()"></select>
                 <button class="logout-btn" onclick="logout()">خروج</button>
             </div>
         </div>
-        
         <div class="tabs">
             <button id="tab-orders" class="active" onclick="switchTab('orders')">الطلبات الحالية</button>
-            <button id="tab-menu" onclick="switchTab('menu')">إدارة توفر الأصناف</button>
+            <button id="tab-menu" onclick="switchTab('menu')">إدارة المنيو</button>
         </div>
-
         <div id="ordersSection"></div>
-        <div id="menuSection" style="display:none;"></div>
+        <div id="menuSection" style="display:none; margin-top:20px;"></div>
     </div>
 
-    <script>
-        let currentUser = null;
-        let lastOrdersString = "";
-        let lastMenuString = "";
-        let lastOrderCount = 0;
-        let dataInterval;
+    <!-- منطقة الطباعة المخفية -->
+    <div id="printArea" style="display:none;"></div>
 
-        // --- نظام الدخول ---
+    <script>
+        let currentUser = null, dataInterval, allActiveOrders = [];
+
         function checkAuth() {
             currentUser = JSON.parse(localStorage.getItem('branchUser'));
             if(currentUser && (currentUser.role === 'branch' || currentUser.role === 'admin')) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'flex';
-                document.getElementById('userNameDisplay').innerText = currentUser.name;
                 initApp();
             } else {
                 document.getElementById('loginOverlay').style.display = 'flex';
@@ -96,43 +91,20 @@
         }
 
         async function login() {
-            const username = document.getElementById('loginUser').value;
-            const password = document.getElementById('loginPass').value;
-            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username, password}) });
+            const u = document.getElementById('loginUser').value, p = document.getElementById('loginPass').value;
+            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p}) });
             const data = await res.json();
-            
-            if(data.success && (data.user.role === 'branch' || data.user.role === 'admin')) {
-                localStorage.setItem('branchUser', JSON.stringify(data.user));
-                checkAuth();
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم تسجيل الدخول', showConfirmButton: false, timer: 2000 });
-            } else {
-                Swal.fire('خطأ', data.message || 'ليس لديك صلاحية دخول لشاشة الفرع', 'error');
-            }
+            if(data.success && (data.user.role === 'branch' || data.user.role === 'admin')) { localStorage.setItem('branchUser', JSON.stringify(data.user)); checkAuth(); }
+            else Swal.fire('خطأ', 'بيانات غير صحيحة', 'error');
         }
+        function logout() { localStorage.removeItem('branchUser'); clearInterval(dataInterval); checkAuth(); }
 
-        function logout() {
-            localStorage.removeItem('branchUser');
-            clearInterval(dataInterval);
-            checkAuth();
-        }
-
-        // --- تهيئة التطبيق والقفل الذكي ---
         async function initApp() {
-            const res = await fetch('/api/branches');
-            const branches = await res.json();
+            const res = await fetch('/api/branches'); const branches = await res.json();
             const select = document.getElementById('branchSelect');
             select.innerHTML = branches.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-            
-            // 🔒 القفل الذكي: إذا كان المستخدم مدير فرع، نثبت اختياره ونقفل القائمة
-            if(currentUser.role === 'branch') {
-                select.value = currentUser.branchId;
-                select.disabled = true;
-            } else {
-                select.disabled = false; // المدير العام يمكنه اختيار أي فرع
-            }
-            
-            forceLoadData();
-            dataInterval = setInterval(loadDataSilently, 3000);
+            if(currentUser.role === 'branch') { select.value = currentUser.branchId; select.disabled = true; }
+            forceLoadData(); dataInterval = setInterval(loadDataSilently, 3000);
         }
 
         function switchTab(tab) {
@@ -143,10 +115,7 @@
             forceLoadData();
         }
 
-        function forceLoadData() {
-            lastOrdersString = ""; lastMenuString = ""; 
-            loadDataSilently();
-        }
+        function forceLoadData() { loadDataSilently(); }
 
         function loadDataSilently() {
             if(document.getElementById('ordersSection').style.display !== 'none') fetchOrders();
@@ -159,32 +128,23 @@
             const res = await fetch('/api/orders/' + branchId);
             const orders = await res.json();
             
-            const activeOrders = orders.filter(o => o.status !== 'استلم الطلب');
-            const currentString = JSON.stringify(activeOrders);
+            allActiveOrders = orders.filter(o => o.status !== 'استلم الطلب');
             
-            if(currentString === lastOrdersString) return;
-            lastOrdersString = currentString;
-
-            if(activeOrders.length > lastOrderCount && lastOrderCount !== 0) {
-                new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg' ).play().catch(()=>{});
-                Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: 'طلب جديد!', showConfirmButton: false, timer: 2000 });
-            }
-            lastOrderCount = activeOrders.length;
-
-            let html = activeOrders.map(order => `
-                <div class="order-card" style="border-color: ${order.status === 'الطلب جاهز' ? '#4caf50' : '#ff9800'}">
+            let html = allActiveOrders.map(order => `
+                <div class="order-card" style="border-color: ${order.status === 'الطلب جاهز' ? '#27ae60' : '#E50914'}">
+                    <button class="print-btn" onclick="printOrder('${order.id}')">🖨️ طباعة</button>
                     <div class="order-header">
                         <strong>#${order.id} - ${order.name}</strong>
                         <span style="color:#aaa;">${order.time}</span>
                     </div>
                     <div class="order-items">
-                        ${order.items.map(i => `<div>• ${i.name} <span style="color:#ff9800;">(x${i.qty})</span></div>`).join('')}
+                        ${order.items.map(i => `<div>• ${i.name} <span style="color:#E50914;">(x${i.qty})</span></div>`).join('')}
                     </div>
                     <div style="margin-top:10px; font-size:14px; color:#aaa;">الحالة: <strong style="color:white;">${order.status}</strong></div>
                     <div class="order-actions">
-                        ${order.status === 'استلام الطلب' ? `<button class="btn btn-prep" onclick="updateStatus(${order.id}, 'قيد التجهيز')">بدء التجهيز</button>` : ''}
-                        ${order.status === 'قيد التجهيز' ? `<button class="btn btn-ready" onclick="updateStatus(${order.id}, 'الطلب جاهز')">جاهز للتسليم</button>` : ''}
-                        ${order.status === 'الطلب جاهز' ? `<button class="btn btn-done" onclick="updateStatus(${order.id}, 'استلم الطلب')">تم التسليم للعميل</button>` : ''}
+                        ${order.status === 'استلام الطلب' ? `<button class="btn btn-prep" onclick="updateStatus('${order.id}', 'قيد التجهيز')">بدء التجهيز</button>` : ''}
+                        ${order.status === 'قيد التجهيز' ? `<button class="btn btn-ready" onclick="updateStatus('${order.id}', 'الطلب جاهز')">جاهز للتسليم</button>` : ''}
+                        ${order.status === 'الطلب جاهز' ? `<button class="btn btn-done" onclick="updateStatus('${order.id}', 'استلم الطلب')">تم التسليم</button>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -197,19 +157,56 @@
             forceLoadData();
         }
 
-        async function fetchMenu() {
-            const res = await fetch('/api/menu');
-            const menu = await res.json();
+        // 🖨️ دالة طباعة الفاتورة الحرارية
+        function printOrder(orderId) {
+            const order = allActiveOrders.find(o => o.id === orderId);
+            if(!order) return;
             
-            const currentString = JSON.stringify(menu);
-            if(currentString === lastMenuString) return;
-            lastMenuString = currentString;
+            const printHtml = `
+                <div style="text-align:center; border-bottom:1px dashed #000; padding-bottom:10px; margin-bottom:10px;">
+                    <h2 style="margin:0; font-size:24px;">أبو مهل 🍔</h2>
+                    <p style="margin:0; font-size:14px;">رقم الطلب: #${order.id}</p>
+                    <p style="margin:0; font-size:14px;">الوقت: ${order.time}</p>
+                </div>
+                <div style="margin-bottom:10px; font-size:14px;">
+                    <strong>العميل:</strong> ${order.name}  
 
+                    <strong>الجوال:</strong> ${order.phone}
+                </div>
+                <table style="width:100%; font-size:14px; border-collapse:collapse; margin-bottom:10px;">
+                    <tr style="border-bottom:1px solid #000;">
+                        <th style="text-align:right; padding-bottom:5px;">الصنف</th>
+                        <th style="text-align:center; padding-bottom:5px;">الكمية</th>
+                        <th style="text-align:left; padding-bottom:5px;">السعر</th>
+                    </tr>
+                    ${order.items.map(i => `
+                    <tr>
+                        <td style="text-align:right; padding-top:5px;">${i.name}</td>
+                        <td style="text-align:center; padding-top:5px;">${i.qty}</td>
+                        <td style="text-align:left; padding-top:5px;">${i.price * i.qty}</td>
+                    </tr>
+                    `).join('')}
+                </table>
+                <div style="border-top:1px dashed #000; padding-top:10px; text-align:left; font-weight:bold; font-size:18px;">
+                    الإجمالي: ${order.total} ريال
+                </div>
+                <div style="text-align:center; margin-top:20px; font-size:14px; font-weight:bold;">
+                    شكراً لطلبكم من أبو مهل!
+                </div>
+            `;
+            
+            const printArea = document.getElementById('printArea');
+            printArea.innerHTML = printHtml;
+            window.print();
+        }
+
+        async function fetchMenu() {
+            const res = await fetch('/api/menu'); const menu = await res.json();
             document.getElementById('menuSection').innerHTML = menu.map(item => `
-                <div class="menu-card">
+                <div style="background:#1f1f1f; padding:15px 20px; margin-bottom:15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; border-left: 4px solid #E50914;">
                     <strong style="font-size:18px;">${item.name}</strong>
-                    <button class="btn ${item.available ? 'btn-ready' : 'btn-prep'}" style="flex:none; width:150px;" onclick="toggleMenu(${item.id})">
-                        ${item.available ? 'متوفر ✅' : 'نفدت الكمية ❌'}
+                    <button class="btn ${item.available ? 'btn-ready' : 'btn-prep'}" style="flex:none; width:150px;" onclick="toggleMenu('${item.id}')">
+                        ${item.available ? 'متوفر ✅' : 'نفد ❌'}
                     </button>
                 </div>
             `).join('');

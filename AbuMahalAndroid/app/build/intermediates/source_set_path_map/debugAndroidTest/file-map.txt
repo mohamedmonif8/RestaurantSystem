@@ -1,0 +1,4 @@
+com.restaurant.abumahal.test.app-androidTest-0 C:\Users\مم\RestaurantSystem\AbuMahalAndroid\app\build\generated\res\resValues\androidTest\debug
+com.restaurant.abumahal.test.app-mergeDebugAndroidTestResources-1 C:\Users\مم\RestaurantSystem\AbuMahalAndroid\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.restaurant.abumahal.test.app-mergeDebugAndroidTestResources-2 C:\Users\مم\RestaurantSystem\AbuMahalAndroid\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.restaurant.abumahal.test.app-merged_res-3 C:\Users\مم\RestaurantSystem\AbuMahalAndroid\app\build\intermediates\merged_res\debugAndroidTest
