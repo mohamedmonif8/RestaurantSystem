@@ -1,69 +1,93 @@
 ﻿const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// تقديم ملفات الواجهات الأمامية
 app.use('/customer', express.static(path.join(__dirname, '../frontend/customer')));
 app.use('/branch', express.static(path.join(__dirname, '../frontend/branch')));
 app.use('/admin', express.static(path.join(__dirname, '../frontend/admin')));
 
-const dbFile = path.join(__dirname, 'data.json');
-let db = { 
-    orders: [], 
-    branches: [{ id: 1, name: 'الفرع الرئيسي' }], 
-    menu: [{ id: 1, name: 'برجر لحم', price: 25, available: true }],
-    users: [{ id: 1, username: 'admin', password: '123', role: 'admin', name: 'المدير العام' }]
+// --- الاتصال بقاعدة البيانات ---
+const dbURI = 'mongodb+srv://mohamedmonif8:Aa701427124Aa@admin.rq7mrub.mongodb.net/RestaurantDB?retryWrites=true&w=majority';
+mongoose.connect(dbURI)
+    .then(() => console.log('✅ تم الاتصال بقاعدة البيانات بنجاح!'))
+    .catch(err => console.log('❌ خطأ في الاتصال بقاعدة البيانات:', err));
+
+// --- إعداد الجداول (Schemas) ---
+// هذه الإضافة لتحويل _id الخاص بـ Mongo إلى id العادي ليتوافق مع واجهاتنا
+const schemaOptions = {
+    toJSON: {
+        virtuals: true,
+        transform: function(doc, ret) { ret.id = ret._id; delete ret._id; delete ret.__v; }
+    }
 };
 
-if (fs.existsSync(dbFile)) {
-    const savedDb = JSON.parse(fs.readFileSync(dbFile));
-    db = { ...db, ...savedDb };
-    if(!db.users) db.users = [{ id: 1, username: 'admin', password: '123', role: 'admin', name: 'المدير العام' }];
-}
-const saveDb = () => fs.writeFileSync(dbFile, JSON.stringify(db, null, 2));
+const User = mongoose.model('User', new mongoose.Schema({ name: String, username: String, password: String, role: String, branchId: String }, schemaOptions));
+const Branch = mongoose.model('Branch', new mongoose.Schema({ name: String }, schemaOptions));
+const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, price: Number, available: { type: Boolean, default: true } }, schemaOptions));
+const Order = mongoose.model('Order', new mongoose.Schema({ name: String, phone: String, branchId: String, items: Array, total: Number, status: String, time: String }, schemaOptions));
 
-// --- مسار تسجيل الدخول ---
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = db.users.find(u => u.username === username && u.password === password);
-    if (user) {
-        res.json({ success: true, user: { id: user.id, name: user.name, role: user.role, branchId: user.branchId } });
-    } else {
-        res.json({ success: false, message: 'اسم المستخدم أو كلمة المرور غير صحيحة' });
-    }
+// إنشاء حساب المدير الافتراضي إذا لم يكن موجوداً
+setTimeout(async () => {
+    const adminExists = await User.findOne({ username: 'admin' });
+    if (!adminExists) await User.create({ name: 'المدير العام', username: 'admin', password: '123', role: 'admin' });
+}, 2000);
+
+// --- مسارات تسجيل الدخول والمستخدمين ---
+app.post('/api/login', async (req, res) => {
+    const user = await User.findOne({ username: req.body.username, password: req.body.password });
+    if (user) res.json({ success: true, user });
+    else res.json({ success: false, message: 'اسم المستخدم أو كلمة المرور غير صحيحة' });
+});
+app.get('/api/users', async (req, res) => res.json(await User.find()));
+app.post('/api/users', async (req, res) => {
+    if(await User.findOne({ username: req.body.username })) return res.json({ success: false, message: 'اسم المستخدم موجود مسبقاً' });
+    await User.create(req.body); res.json({ success: true });
+});
+app.delete('/api/users/:id', async (req, res) => { await User.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// --- مسارات الفروع ---
+app.get('/api/branches', async (req, res) => res.json(await Branch.find()));
+app.post('/api/branches', async (req, res) => { await Branch.create(req.body); res.json({ success: true }); });
+app.delete('/api/branches/:id', async (req, res) => { await Branch.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// --- مسارات المنيو ---
+app.get('/api/menu', async (req, res) => res.json(await Menu.find()));
+app.post('/api/menu', async (req, res) => { await Menu.create(req.body); res.json({ success: true }); });
+app.delete('/api/menu/:id', async (req, res) => { await Menu.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+app.put('/api/menu/:id/toggle', async (req, res) => {
+    const item = await Menu.findById(req.params.id);
+    if(item) { item.available = !item.available; await item.save(); res.json({ success: true }); }
 });
 
-// --- مسارات المستخدمين (للإدارة) ---
-app.get('/api/users', (req, res) => res.json(db.users.map(u => ({ id: u.id, username: u.username, name: u.name, role: u.role, branchId: u.branchId }))));
-app.post('/api/users', (req, res) => {
-    if(db.users.find(u => u.username === req.body.username)) return res.json({ success: false, message: 'اسم المستخدم موجود مسبقاً' });
-    const newUser = { id: Date.now(), ...req.body };
-    db.users.push(newUser); saveDb(); res.json({ success: true });
+// --- مسارات الطلبات ---
+app.post('/api/orders', async (req, res) => {
+    const order = await Order.create({ ...req.body, status: 'استلام الطلب', time: new Date().toLocaleTimeString() });
+    res.json({ success: true, orderId: order.id });
 });
-app.delete('/api/users/:id', (req, res) => {
-    db.users = db.users.filter(u => u.id != req.params.id); saveDb(); res.json({ success: true });
+app.get('/api/orders/:branchId', async (req, res) => res.json(await Order.find({ branchId: req.params.branchId })));
+app.get('/api/orders/track/:orderId', async (req, res) => {
+    try { const order = await Order.findById(req.params.orderId); res.json(order || { error: 'غير موجود' }); } 
+    catch(e) { res.json({ error: 'غير موجود' }); }
+});
+app.put('/api/orders/:orderId/status', async (req, res) => {
+    await Order.findByIdAndUpdate(req.params.orderId, { status: req.body.status }); res.json({ success: true });
 });
 
-// --- باقي المسارات (الفروع، المنيو، الطلبات) ---
-app.get('/api/branches', (req, res) => res.json(db.branches));
-app.post('/api/branches', (req, res) => { db.branches.push({ id: Date.now(), name: req.body.name }); saveDb(); res.json({ success: true }); });
-app.delete('/api/branches/:id', (req, res) => { db.branches = db.branches.filter(b => b.id != req.params.id); saveDb(); res.json({ success: true }); });
-
-app.get('/api/menu', (req, res) => res.json(db.menu));
-app.post('/api/menu', (req, res) => { db.menu.push({ id: Date.now(), name: req.body.name, price: req.body.price, available: true }); saveDb(); res.json({ success: true }); });
-app.delete('/api/menu/:id', (req, res) => { db.menu = db.menu.filter(m => m.id != req.params.id); saveDb(); res.json({ success: true }); });
-app.put('/api/menu/:id/toggle', (req, res) => { const item = db.menu.find(m => m.id == req.params.id); if(item) { item.available = !item.available; saveDb(); res.json({ success: true }); } });
-
-app.post('/api/orders', (req, res) => { const newOrder = { id: Date.now(), ...req.body, status: 'استلام الطلب', time: new Date().toLocaleTimeString() }; db.orders.push(newOrder); saveDb(); res.json({ success: true, orderId: newOrder.id }); });
-app.get('/api/orders/:branchId', (req, res) => res.json(db.orders.filter(o => o.branchId == req.params.branchId)));
-app.get('/api/orders/track/:orderId', (req, res) => res.json(db.orders.find(o => o.id == req.params.orderId) || { error: 'غير موجود' }));
-app.put('/api/orders/:orderId/status', (req, res) => { const order = db.orders.find(o => o.id == req.params.orderId); if(order) { order.status = req.body.status; saveDb(); res.json({ success: true }); } });
-
-app.get('/api/admin/summary', (req, res) => res.json({ totalOrders: db.orders.length, totalRevenue: db.orders.reduce((sum, o) => sum + o.total, 0), branchesCount: db.branches.length, usersCount: db.users.length }));
+// --- مسار الإدارة (الملخص) ---
+app.get('/api/admin/summary', async (req, res) => {
+    const totalOrders = await Order.countDocuments();
+    const branchesCount = await Branch.countDocuments();
+    const usersCount = await User.countDocuments();
+    const orders = await Order.find();
+    const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+    res.json({ totalOrders, totalRevenue, branchesCount, usersCount });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
