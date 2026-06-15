@@ -11,10 +11,11 @@ app.use('/customer', express.static(path.join(__dirname, '../frontend/customer')
 app.use('/branch', express.static(path.join(__dirname, '../frontend/branch')));
 app.use('/admin', express.static(path.join(__dirname, '../frontend/admin')));
 
-app.get('/', (req, res) => res.send('🚀 Abu Mahal Server is running!'));
+app.get('/', (req, res) => res.send('🚀 Server is running!'));
 
-const dbURI = 'mongodb+srv://mohamedmonif8:Aa701427124Aa@admin.rq7mrub.mongodb.net/RestaurantDB?retryWrites=true&w=majority';
-mongoose.connect(dbURI).then(() => { console.log('✅ DB Connected!'); initAdmin(); }).catch(err => console.log('❌ DB Error:', err.message));
+mongoose.connect('mongodb+srv://mohamedmonif8:Aa701427124Aa@admin.rq7mrub.mongodb.net/RestaurantDB?retryWrites=true&w=majority')
+    .then(() => { console.log('✅ DB Connected!'); initAdmin(); })
+    .catch(err => console.log('❌ DB Error:', err.message));
 
 const schemaOptions = { toJSON: { virtuals: true, transform: function(doc, ret) { ret.id = ret._id; delete ret._id; delete ret.__v; } } };
 
@@ -24,7 +25,9 @@ const Category = mongoose.model('Category', new mongoose.Schema({ name: String }
 const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, price: Number, categoryId: String, available: { type: Boolean, default: true } }, schemaOptions));
 const Order = mongoose.model('Order', new mongoose.Schema({ name: String, phone: String, branchId: String, items: Array, total: Number, status: String, time: String, timestamps: Object }, schemaOptions));
 
-async function initAdmin() { try { if (!(await User.findOne({ username: 'admin' }))) await User.create({ name: 'المدير العام', username: 'admin', password: '123', role: 'admin' }); } catch(e) {} }
+async function initAdmin() {
+    try { if (!(await User.findOne({ username: 'admin' }))) await User.create({ name: 'المدير العام', username: 'admin', password: '123', role: 'admin' }); } catch(e) {}
+}
 
 app.post('/api/login', async (req, res) => { try { const user = await User.findOne({ username: req.body.username, password: req.body.password }); if (user) res.json({ success: true, user }); else res.json({ success: false, message: 'خطأ' }); } catch(e) { res.json({ success: false }); } });
 app.get('/api/users', async (req, res) => { try { res.json(await User.find()); } catch(e) { res.json([]); } });
@@ -52,6 +55,17 @@ app.put('/api/orders/:orderId/status', async (req, res) => { try { const order =
 app.get('/api/admin/summary', async (req, res) => { try { const orders = await Order.find(); res.json({ totalOrders: orders.length, totalRevenue: orders.reduce((sum, o) => sum + o.total, 0), branchesCount: await Branch.countDocuments(), usersCount: await User.countDocuments() }); } catch(e) { res.json({ totalOrders: 0, totalRevenue: 0, branchesCount: 0, usersCount: 0 }); } });
 app.get('/api/admin/orders', async (req, res) => { try { res.json(await Order.find().sort({_id: -1})); } catch(e) { res.json([]); } });
 
-app.get('/api/admin/customers', async (req, res) => { try { const orders = await Order.find(); const cMap = {}; orders.forEach(o => { if(!cMap[o.phone]) cMap[o.phone] = { name: o.name, phone: o.phone, count: 0, total: 0 }; cMap[o.phone].count++; cMap[o.phone].total += o.total; }); res.json(Object.values(cMap)); } catch(e) { res.json([]); } });
-app.listen(process.env.PORT || 3000, () => console.log('Server running'));
+app.get('/api/admin/customers', async (req, res) => {
+    try {
+        const orders = await Order.find();
+        const cMap = {};
+        orders.forEach(o => {
+            if(!cMap[o.phone]) cMap[o.phone] = { name: o.name, phone: o.phone, count: 0, total: 0 };
+            cMap[o.phone].count++;
+            cMap[o.phone].total += o.total;
+        });
+        res.json(Object.values(cMap));
+    } catch(e) { res.json([]); }
+});
 
+app.listen(process.env.PORT || 3000, () => console.log('Server running'));
