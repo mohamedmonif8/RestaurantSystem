@@ -101,5 +101,50 @@
 
         async function trackOrder(id) { Swal.fire({title: 'جاري التحديث...', background: 'rgba(20,20,20,0.9)', color: '#ffffff', didOpen: () => Swal.showLoading()}); const res = await fetch('/api/orders/track/' + id); const o = await res.json(); if(o.error) return Swal.fire('خطأ', 'الطلب غير موجود', 'error'); const orderIndex = userData.orders.findIndex(x => x.id === id); if(orderIndex > -1) { userData.orders[orderIndex].status = o.status; localStorage.setItem('abuMahalUser', JSON.stringify(userData)); } let icon = '🍳'; let color = '#ffffff'; if(o.status === 'قيد التجهيز') { icon = '👨‍🍳'; color = '#f39c12'; } if(o.status === 'الطلب جاهز') { icon = '🛍️'; color = '#2ecc71'; } if(o.status === 'استلم الطلب') { icon = '✅'; color = '#E50914'; } Swal.fire({ html: `<div style="font-size:50px; margin-bottom:10px;">${icon}</div><h3 style="margin:0; color:${color};">${o.status}</h3><p style="color:#ffffff; opacity:0.7; margin-top:5px;">طلب #${id}</p>`, background: 'rgba(20,20,20,0.9)', color: '#ffffff', confirmButtonColor: '#E50914', confirmButtonText: 'حسناً' }); }
     </script>
+
+<script>
+// --- التحديث الذكي للكميات (تطبيق العميل) ---
+setInterval(async () => {
+    if (!window.orderData || !window.orderData.branchId) return;
+    try {
+        const r = await fetch('/api/menu?v=' + Date.now());
+        const menu = await r.json();
+        let cartChanged = false;
+
+        document.querySelectorAll('.menu-item').forEach(el => {
+            const actDiv = el.querySelector('[id^="act-"]');
+            if (actDiv) {
+                const id = actDiv.id.replace('act-', '');
+                const menuItem = menu.find(m => m.id === id);
+                
+                if (menuItem && menuItem.outOfStockBranches && menuItem.outOfStockBranches.includes(window.orderData.branchId)) {
+                    el.style.display = 'none'; // إخفاء الصنف
+                    if (window.cart && window.cart[id]) {
+                        delete window.cart[id]; // حذفه من السلة
+                        cartChanged = true;
+                    }
+                } else {
+                    el.style.display = 'block'; // إظهار الصنف
+                }
+            }
+        });
+
+        if (cartChanged) {
+            if (typeof window.renderCart === 'function') window.renderCart();
+            if (typeof window.updateAllUI === 'function') window.updateAllUI();
+            if (window.Swal) {
+                Swal.fire({
+                    title: 'تنبيه',
+                    text: 'تم إزالة بعض الأصناف من سلتك لأنها نفدت في الفرع المحدد.',
+                    icon: 'info',
+                    confirmButtonColor: '#E50914',
+                    background: 'rgba(20,20,20,0.9)',
+                    color: '#ffffff'
+                });
+            }
+        }
+    } catch (e) {}
+}, 3000);
+</script>
 </body>
 </html>

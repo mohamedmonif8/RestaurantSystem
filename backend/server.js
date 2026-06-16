@@ -24,4 +24,23 @@ app.post('/api/orders', async (req, res) => { const now = new Date().toLocaleTim
 app.get('/api/admin/summary', async (req, res) => { const orders = await Order.find(); res.json({ totalOrders: orders.length, totalRevenue: orders.reduce((sum, o) => sum + o.total, 0), branchesCount: await Branch.countDocuments(), usersCount: await User.countDocuments() }); }); app.get('/api/admin/orders', async (req, res) => { res.json(await Order.find().sort({_id: -1})); });
 app.get('/api/admin/customers', async (req, res) => { const orders = await Order.find(); const cMap = {}; orders.forEach(o => { if(!cMap[o.phone]) cMap[o.phone] = { name: o.name, phone: o.phone, count: 0, total: 0 }; cMap[o.phone].count++; cMap[o.phone].total += o.total; }); res.json(Object.values(cMap)); });
 
+
+app.put('/api/menu/:id/toggle/:branchId', async (req, res) => {
+    try {
+        const db = client.db(dbName);
+        const item = await db.collection('menu').findOne({ id: req.params.id });
+        if (!item) return res.status(404).json({ success: false });
+        let outOfStockBranches = item.outOfStockBranches || [];
+        if (outOfStockBranches.includes(req.params.branchId)) {
+            outOfStockBranches = outOfStockBranches.filter(b => b !== req.params.branchId);
+        } else {
+            outOfStockBranches.push(req.params.branchId);
+        }
+        await db.collection('menu').updateOne({ id: req.params.id }, { $set: { outOfStockBranches } });
+        res.json({ success: true, outOfStockBranches });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 app.listen(process.env.PORT || 3000);

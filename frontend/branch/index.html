@@ -219,6 +219,30 @@
 
         checkAuth();
     </script>
+
+<script>
+// --- التحديث الذكي للكميات (شاشة المطبخ) ---
+window.loadMenu = async function() {
+    if(!branchData) return;
+    const r = await fetch('/api/menu?v=' + Date.now());
+    const menu = await r.json();
+    const container = document.getElementById('sec-menu');
+    if(!container) return;
+    container.innerHTML = menu.map(m => {
+        const isOut = (m.outOfStockBranches || []).includes(branchData.branchId);
+        return `<div class="card" style="text-align:center; justify-content:center; background:rgba(0,0,0,0.5); border:1px solid #333; border-radius:12px; padding:15px;">
+            <h3 style="margin-top:0; color:#fff;">${m.name}</h3>
+            <button class="btn ${isOut ? 'btn-red' : 'btn-green'}" style="width:100%; padding:12px; font-size:16px; border:none; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; background:${isOut ? '#E50914' : '#27ae60'};" onclick="window.tog('${m.id}')">
+                ${isOut ? 'نفدت الكمية ❌' : 'متوفر ✅'}
+            </button>
+        </div>`;
+    }).join('');
+};
+window.tog = async function(id) {
+    await fetch('/api/menu/' + id + '/toggle/' + branchData.branchId, { method: 'PUT' });
+    window.loadMenu();
+};
+</script>
 </body>
 </html>
 
