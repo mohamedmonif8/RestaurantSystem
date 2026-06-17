@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">أبو مهل</string>
+    <style name="Theme.AbuMahal" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FFC107</item>
+        <item name="colorPrimaryDark">#FF9800</item>
+        <item name="colorAccent">#FFC107</item>
+    </style>
+</resources>
