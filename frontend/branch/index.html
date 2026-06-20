@@ -4,7 +4,19 @@
     <meta charset="UTF-8">
     <title>جهاز  المطبخ | أبو مهل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">const origFetchB = window.fetch;
+window.fetch = async function(url, opts) {
+    if(opts && ['POST','PUT','DELETE'].includes(opts.method) && !url.includes('/api/logs') && !url.includes('/api/login')) {
+        let act = 'تعديل';
+        if(url.includes('/status')) act = 'تحديث حالة طلب';
+        if(url.includes('/toggle')) act = 'تغيير كمية صنف';
+        let uName = 'موظف فرع';
+        try{ const u = JSON.parse(localStorage.getItem('branchUser')||localStorage.getItem('bUser')); if(u) uName = u.name; }catch(e){}
+        origFetchB('/api/logs', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:uName,action:act})});
+    }
+    return origFetchB.apply(this, arguments);
+};
+</script>
     <style>
         body { font-family: 'Cairo', sans-serif; background: #141414; color: #fff; padding: 0; margin: 0; }
         
@@ -218,7 +230,19 @@
         }
 
         checkAuth();
-    </script>
+    const origFetchB = window.fetch;
+window.fetch = async function(url, opts) {
+    if(opts && ['POST','PUT','DELETE'].includes(opts.method) && !url.includes('/api/logs') && !url.includes('/api/login')) {
+        let act = 'تعديل';
+        if(url.includes('/status')) act = 'تحديث حالة طلب';
+        if(url.includes('/toggle')) act = 'تغيير كمية صنف';
+        let uName = 'موظف فرع';
+        try{ const u = JSON.parse(localStorage.getItem('branchUser')||localStorage.getItem('bUser')); if(u) uName = u.name; }catch(e){}
+        origFetchB('/api/logs', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:uName,action:act})});
+    }
+    return origFetchB.apply(this, arguments);
+};
+</script>
 
 <script>
 // --- التحديث الذكي للكميات (شاشة المطبخ) ---
@@ -242,7 +266,20 @@ window.tog = async function(id) {
     await fetch('/api/menu/' + id + '/toggle/' + branchData.branchId, { method: 'PUT' });
     window.loadMenu();
 };
+const origFetchB = window.fetch;
+window.fetch = async function(url, opts) {
+    if(opts && ['POST','PUT','DELETE'].includes(opts.method) && !url.includes('/api/logs') && !url.includes('/api/login')) {
+        let act = 'تعديل';
+        if(url.includes('/status')) act = 'تحديث حالة طلب';
+        if(url.includes('/toggle')) act = 'تغيير كمية صنف';
+        let uName = 'موظف فرع';
+        try{ const u = JSON.parse(localStorage.getItem('branchUser')||localStorage.getItem('bUser')); if(u) uName = u.name; }catch(e){}
+        origFetchB('/api/logs', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:uName,action:act})});
+    }
+    return origFetchB.apply(this, arguments);
+};
 </script>
 </body>
 </html>
+
 

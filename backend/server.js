@@ -44,3 +44,7 @@ app.put('/api/menu/:id/toggle/:branchId', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000);
+
+const Log=mongoose.model('Log',new mongoose.Schema({user:String,action:String,date:String},{versionKey:false}));
+app.post('/api/logs',async(req,res)=>{await Log.create({...req.body,date:new Date().toLocaleString('ar-SA')});res.json({success:true});});
+app.get('/api/logs',async(req,res)=>{res.json(await Log.find().sort({_id:-1}).limit(100));});
